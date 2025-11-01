@@ -5,6 +5,8 @@ import br.com.carlos.projeto.application.command.LoginCommand;
 import br.com.carlos.projeto.application.command.RegisterUserCommand;
 import br.com.carlos.projeto.application.dto.LoginResponseDTO;
 import br.com.carlos.projeto.application.dto.UserDTO;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +16,7 @@ import java.net.URI;
 
 @RestController
 @RequestMapping("/auth")
+@Tag(name = "Autenticação")
 public class AuthenticationController {
 
     AuthenticationService service;
@@ -34,6 +37,7 @@ public class AuthenticationController {
         return ResponseEntity.created(URI.create("")).body(dto);
     }
 
+    @Operation(summary = "Traz informações sobre o usuário autenticado")
     @GetMapping("/me")
     public ResponseEntity<UserDTO> me() {
         UserDTO user = service.me();
