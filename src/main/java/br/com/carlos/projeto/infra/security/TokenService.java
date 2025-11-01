@@ -20,8 +20,8 @@ public class TokenService {
     private String secret;
     private int expirationTime = 2;
 
-    public String generateToken(AuthUser user){
-        try{
+    public String generateToken(AuthUser user) {
+        try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
             String token = JWT.create()
                     .withIssuer("auth-api")
@@ -30,7 +30,7 @@ public class TokenService {
                     .sign(algorithm);
             return token;
         } catch (JWTCreationException exception) {
-            throw new AuthenticationException("Erro criando o token: "+exception.getMessage( ) + "\n" + exception.getCause( ));
+            throw new AuthenticationException("Erro criando o token: " + exception.getMessage() + "\n" + exception.getCause());
         }
     }
 
@@ -42,12 +42,12 @@ public class TokenService {
                     .build()
                     .verify(token)
                     .getSubject();
-        } catch (JWTVerificationException exception){
+        } catch (JWTVerificationException exception) {
             throw new AuthenticationException("Token expirou! Faça login novamente");
         }
     }
 
-    private Instant genExpirationDate(){
+    private Instant genExpirationDate() {
         return LocalDateTime.now().plusHours(expirationTime).toInstant(ZoneOffset.of("-03:00"));
     }
 }

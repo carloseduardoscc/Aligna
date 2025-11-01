@@ -21,42 +21,41 @@ import java.util.List;
 public class SecurityConfigurations {
 
     JwtAuthenticationFilter jwtAuthenticationFilter;
+    @Value("${api.security.cors.allowed_origins}")
+    String allowedOrigins;
 
     public SecurityConfigurations(JwtAuthenticationFilter jwtAuthenticationFilter) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
-    @Value("${api.security.cors.allowed_origins}")
-    String allowedOrigins;
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-            return  httpSecurity
-                    // Permite uso de iframes (necessário para o H2 Console)
-                    .headers(headers -> headers
-                            .frameOptions(frame -> frame.disable())
-                    )
-                    // Desabilita o padrão de segurança csrf
-                    .csrf(csrf -> csrf.disable())
-                    // Configuração de CORS do Security, ele tem um aparte do padrão do Spring que precise também ser configurado
-                    .cors(cors -> cors.configurationSource(request -> {
-                        var corsConfig = new org.springframework.web.cors.CorsConfiguration();
-                        corsConfig.setAllowedOriginPatterns(List.of(allowedOrigins));
-                        corsConfig.setAllowedMethods(List.of("*"));
-                        corsConfig.setAllowedHeaders(List.of("*"));
-                        corsConfig.setAllowCredentials(true);
-                        return corsConfig;
-                    }))
-                    // Torna a sessão Stateless
-                    .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                    // Mapeamento de autorizações
-                    .authorizeHttpRequests(authorize -> authorize
-                            .requestMatchers("/h2-console/**", "/auth/**", "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                            .anyRequest().authenticated()
-                    )
-                    // Pre filtragem da requisição para validação de login com token
-                    .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                    .build();
+        return httpSecurity
+                // Permite uso de iframes (necessário para o H2 Console)
+                .headers(headers -> headers
+                        .frameOptions(frame -> frame.disable())
+                )
+                // Desabilita o padrão de segurança csrf
+                .csrf(csrf -> csrf.disable())
+                // Configuração de CORS do Security, ele tem um aparte do padrão do Spring que precise também ser configurado
+                .cors(cors -> cors.configurationSource(request -> {
+                    var corsConfig = new org.springframework.web.cors.CorsConfiguration();
+                    corsConfig.setAllowedOriginPatterns(List.of(allowedOrigins));
+                    corsConfig.setAllowedMethods(List.of("*"));
+                    corsConfig.setAllowedHeaders(List.of("*"));
+                    corsConfig.setAllowCredentials(true);
+                    return corsConfig;
+                }))
+                // Torna a sessão Stateless
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                // Mapeamento de autorizações
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/h2-console/**", "/auth/**", "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                        .anyRequest().authenticated()
+                )
+                // Pre filtragem da requisição para validação de login com token
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .build();
     }
 
     @Bean
@@ -65,7 +64,7 @@ public class SecurityConfigurations {
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 }

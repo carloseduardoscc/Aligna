@@ -130,7 +130,7 @@ public class ControllerExceptionHandler {
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
         StandardError err = new StandardError(
                 status.value(),
-                "Erro interno no servidor - "+e.getClass().getSimpleName(),
+                "Erro interno no servidor - " + e.getClass().getSimpleName(),
                 e.getMessage(),
                 request.getRequestURI()
         );

@@ -17,4 +17,5 @@ public record RegisterUserCommand(
         @NotBlank(message = "A senha é obrigatória.")
         @Size(min = 8, max = 100, message = "A senha deve ter no mínimo 8 caracteres.")
         String password
-) {}
+) {
+}

@@ -1,7 +1,6 @@
 package br.com.carlos.projeto.api;
 
 import br.com.carlos.projeto.application.AuthenticationService;
-import br.com.carlos.projeto.application.UserService;
 import br.com.carlos.projeto.application.command.LoginCommand;
 import br.com.carlos.projeto.application.command.RegisterUserCommand;
 import br.com.carlos.projeto.application.dto.LoginResponseDTO;
@@ -30,7 +29,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<UserDTO> registerUser(HttpServletRequest request, @RequestBody @Valid RegisterUserCommand cmd){
+    public ResponseEntity<UserDTO> registerUser(HttpServletRequest request, @RequestBody @Valid RegisterUserCommand cmd) {
         UserDTO dto = service.register(cmd);
         return ResponseEntity.created(URI.create("")).body(dto);
     }

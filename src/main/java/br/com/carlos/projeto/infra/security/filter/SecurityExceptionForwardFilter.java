@@ -1,6 +1,5 @@
 package br.com.carlos.projeto.infra.security.filter;
 
-import br.com.carlos.projeto.infra.security.exception.AuthenticationException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

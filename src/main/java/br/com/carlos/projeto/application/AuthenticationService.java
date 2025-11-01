@@ -5,13 +5,10 @@ import br.com.carlos.projeto.application.command.RegisterUserCommand;
 import br.com.carlos.projeto.application.dto.LoginResponseDTO;
 import br.com.carlos.projeto.application.dto.UserDTO;
 import br.com.carlos.projeto.application.mapper.UserMapper;
-import br.com.carlos.projeto.domain.User;
-import br.com.carlos.projeto.domain.exceptions.DomainException;
 import br.com.carlos.projeto.domain.repository.UserRepository;
 import br.com.carlos.projeto.infra.persistence.entity.UserEntity;
 import br.com.carlos.projeto.infra.security.AuthUser;
 import br.com.carlos.projeto.infra.security.TokenService;
-
 import br.com.carlos.projeto.infra.security.exception.AuthenticationException;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
@@ -31,6 +28,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class AuthenticationService implements UserDetailsService {
 
+    private static final Logger logger = LoggerFactory.getLogger("ACCESS_LOGGER");
     private final UserMapper mapper;
     private final UserRepository<UserEntity> repo;
     private final PasswordEncoder passwordEncoder;
@@ -44,8 +42,6 @@ public class AuthenticationService implements UserDetailsService {
         this.tokenService = tokenService;
         this.repo = repo;
     }
-
-    private static final Logger logger = LoggerFactory.getLogger("ACCESS_LOGGER");
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -82,7 +78,7 @@ public class AuthenticationService implements UserDetailsService {
         return mapper.toDTO(mapper.fromEntity(UserSaved));
     }
 
-    public UserDTO me(){
+    public UserDTO me() {
         return mapper.toDTO(mapper.fromEntity(repo.findById(getCurrentAuthenticatedUser().getId())));
     }
 
