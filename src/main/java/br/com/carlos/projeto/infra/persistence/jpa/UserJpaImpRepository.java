@@ -8,31 +8,31 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-interface JpaRepositoryImp extends JpaRepository<UserEntity, Long> {
+interface UserJpaRepositoryImp extends JpaRepository<UserEntity, Long> {
     UserEntity findByEmail(String email);
 }
 
 @Repository
 public class UserJpaImpRepository implements UserRepository<UserEntity> {
 
-    @Qualifier("jpaRepositoryImp")
+    @Qualifier("userJpaRepositoryImp")
     @Autowired
-    JpaRepositoryImp repo;
+    UserJpaRepositoryImp repo;
 
     public UserEntity save(UserEntity object) {
-        return (UserEntity) repo.save(object);
+        return repo.save(object);
     }
 
     public Iterable<UserEntity> saveAll(Iterable<UserEntity> objects) {
-        return (Iterable<UserEntity>) repo.saveAll(objects);
+        return repo.saveAll(objects);
     }
 
     public UserEntity findById(Long id) {
-        return (UserEntity) repo.findById(id).get();
+        return repo.findById(id).get();
     }
 
     public Iterable<UserEntity> findAll() {
-        return (Iterable<UserEntity>) repo.findAll();
+        return repo.findAll();
     }
 
     public void deleteById(Long id) {

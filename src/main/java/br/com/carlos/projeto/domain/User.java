@@ -8,8 +8,10 @@ public class User {
     private String email;
     private String password;
 
-    public User(Long id, String name, String email, String password) {
-        setId(id);
+    //External
+    ProfessionalProfile professionalProfile;
+
+    public User(String name, String email, String password) {
         setName(name);
         setEmail(email);
         setPassword(password);
@@ -21,16 +23,15 @@ public class User {
         }
     }
 
-    public Long getId() {
-        return id;
+    public void setProfessionalProfile(ProfessionalProfile professionalProfile) {
+        if (this.professionalProfile != null) {
+            throw new DomainException("Este usuário já possui um perfil profissional cadastrado.");
+        }
+        this.professionalProfile = professionalProfile;
     }
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public void setName(String name) {
@@ -38,20 +39,32 @@ public class User {
         this.name = name;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
     public void setEmail(String email) {
         validateNotBlank(email);
         this.email = email;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public ProfessionalProfile getProfessionalProfile() {
+        return professionalProfile;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getPassword() {
+        return password;
     }
 }

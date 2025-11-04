@@ -6,18 +6,17 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Entity(name = "user_tb")
-public class UserEntity {
+@Entity(name = "ProfessionalProfileEntity_tb")
+public class ProfessionalProfileEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     public Long id;
 
-    public String name;
-    public String email;
-    public String password;
+    public String description;
 
     // External
-    @OneToOne(mappedBy = "user", cascade =  CascadeType.ALL)
-    public ProfessionalProfileEntity professionalProfile;
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    public UserEntity user;
 }
