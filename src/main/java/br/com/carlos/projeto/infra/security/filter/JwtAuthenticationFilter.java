@@ -29,21 +29,26 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String token = this.recoverToken(request);
-        if (token != null) {
-            String email = tokenService.validateToken(token);
-            AuthUser user = (AuthUser) authService.loadUserByUsername(email);
+        try {
+            String token = this.recoverToken(request);
+            if (token != null) {
+                String email = tokenService.validateToken(token);
+                AuthUser user = (AuthUser) authService.loadUserByUsername(email);
 
-            // Validação
-            if (user == null) {
-                throw new AuthenticationException("O usuário autenticado não foi encontrado!");
+                // Validação
+                if (user == null) {
+                    throw new AuthenticationException("O usuário autenticado não foi encontrado!");
+                }
+
+                Authentication authentication = new UsernamePasswordAuthenticationToken(user, null, null);
+
+                SecurityContextHolder.getContext().setAuthentication(authentication);
             }
-
-            Authentication authentication = new UsernamePasswordAuthenticationToken(user, null, null);
-
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+            filterChain.doFilter(request, response);
+        } catch (Exception ex) {
+            request.setAttribute("javax.servlet.error.exception", ex); // opcional
+            request.getRequestDispatcher("/security-error-handler").forward(request, response); // envia pro controller
         }
-        filterChain.doFilter(request, response);
     }
 
     private String recoverToken(HttpServletRequest request) {

@@ -6,6 +6,7 @@ import br.com.carlos.projeto.infra.security.exception.AuthorizationException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.FieldError;
@@ -26,15 +27,22 @@ public class ControllerExceptionHandler {
      * BAD REQUEST - 400 <br>
      * Requisição inválida ou violação de regra de negócio.
      */
-    @ExceptionHandler(DomainException.class)
-    public ResponseEntity<StandardError> handleDomainException(DomainException e, HttpServletRequest request) {
+    @ExceptionHandler({HttpMessageNotReadableException.class, DomainException.class})
+    public ResponseEntity<StandardError> handleDomainException(Exception e, HttpServletRequest request) {
         HttpStatus status = HttpStatus.BAD_REQUEST;
+
         StandardError err = new StandardError(
                 status.value(),
                 "Regra de negócio violada",
                 e.getMessage(),
                 request.getRequestURI()
         );
+
+        if (e instanceof HttpMessageNotReadableException) {
+            err.setError("Requisição inválida");
+            err.setMessage("O corpo da requisição está malformado ou contém dados inválidos.");
+        }
+
         return ResponseEntity.status(status).body(err);
     }
 

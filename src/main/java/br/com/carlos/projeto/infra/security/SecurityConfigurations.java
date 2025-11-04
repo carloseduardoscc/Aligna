@@ -13,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
 
 import java.util.List;
 
@@ -39,7 +40,7 @@ public class SecurityConfigurations {
                 .csrf(csrf -> csrf.disable())
                 // Configuração de CORS do Security, ele tem um aparte do padrão do Spring que precise também ser configurado
                 .cors(cors -> cors.configurationSource(request -> {
-                    var corsConfig = new org.springframework.web.cors.CorsConfiguration();
+                    var corsConfig = new CorsConfiguration();
                     corsConfig.setAllowedOriginPatterns(List.of(allowedOrigins));
                     corsConfig.setAllowedMethods(List.of("*"));
                     corsConfig.setAllowedHeaders(List.of("*"));
@@ -50,7 +51,7 @@ public class SecurityConfigurations {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 // Mapeamento de autorizações
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/h2-console/**", "/auth/**", "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                        .requestMatchers("/security-error-handler","/h2-console/**", "/auth/**", "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 // Pre filtragem da requisição para validação de login com token
