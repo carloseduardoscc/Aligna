@@ -74,4 +74,5 @@ http://localhost:8080/swagger-ui/index.html
 | <kbd>POST /auth/login</kbd>     | authenticate a user
 | <kbd>GET /auth/me</kbd>     | get information about logged user
 | <kbd>GET /users/{id}</kbd>     | find a user by ID 
+| <kbd>GET /users/page={page}&size={size}&sort={sorting_att},{asc,desc}</kbd>     | find users with pagination and sorting
 | <kbd>POST /users/professional-profile</kbd>     | register a professional profile 
