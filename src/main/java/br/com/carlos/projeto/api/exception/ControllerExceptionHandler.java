@@ -13,6 +13,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.util.NoSuchElementException;
 
@@ -27,20 +28,20 @@ public class ControllerExceptionHandler {
      * BAD REQUEST - 400 <br>
      * Requisição inválida ou violação de regra de negócio.
      */
-    @ExceptionHandler({HttpMessageNotReadableException.class, DomainException.class})
+    @ExceptionHandler({MethodArgumentTypeMismatchException.class, HttpMessageNotReadableException.class, DomainException.class})
     public ResponseEntity<StandardError> handleDomainException(Exception e, HttpServletRequest request) {
         HttpStatus status = HttpStatus.BAD_REQUEST;
 
         StandardError err = new StandardError(
                 status.value(),
-                "Regra de negócio violada",
+                "Requisição inválida",
                 e.getMessage(),
                 request.getRequestURI()
         );
 
         if (e instanceof HttpMessageNotReadableException) {
             err.setError("Requisição inválida");
-            err.setMessage("O corpo da requisição está malformado ou contém dados inválidos.");
+            err.setMessage("O corpo da requisição está ausente ou contém dados inválidos.");
         }
 
         return ResponseEntity.status(status).body(err);
@@ -83,7 +84,7 @@ public class ControllerExceptionHandler {
      * Recurso solicitado não foi encontrado.
      */
     @ExceptionHandler(NoSuchElementException.class)
-    public ResponseEntity<StandardError> handleNotFound(NoSuchElementException e, HttpServletRequest request) {
+    public ResponseEntity<StandardError> handleNotFound(Exception e, HttpServletRequest request) {
         HttpStatus status = HttpStatus.NOT_FOUND;
         StandardError err = new StandardError(
                 status.value(),
@@ -139,7 +140,7 @@ public class ControllerExceptionHandler {
         StandardError err = new StandardError(
                 status.value(),
                 "Erro interno no servidor - " + e.getClass().getSimpleName(),
-                e.getMessage(),
+                "Internal Exception = "+e.getClass().getSimpleName()+"\n"+e.getMessage(),
                 request.getRequestURI()
         );
         return ResponseEntity.status(status).body(err);

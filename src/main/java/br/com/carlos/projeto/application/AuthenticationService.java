@@ -48,7 +48,7 @@ public class AuthenticationService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UserDetails userDetails = mapper.toAuth(mapper.fromEntity(repo.findByEmail(username)));
         if (userDetails == null) {
-            throw new UsernameNotFoundException(username);
+            throw new UsernameNotFoundException("Usuário com e-mail " + username + " não encontrado!");
         }
         return userDetails;
     }
