@@ -121,6 +121,15 @@ public class UserControllerIntegrationTest {
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.email").value(existingUserEmail));
         }
+
+        @Test
+        void buscarTodosUsuariosDeveRetornar200() throws Exception {
+            mock.perform(get("/users")
+                            .header("Authorization", "Bearer " + token)
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.content").isArray());
+        }
     }
 
 
