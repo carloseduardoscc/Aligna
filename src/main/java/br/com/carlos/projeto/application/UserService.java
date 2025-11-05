@@ -10,9 +10,12 @@ import br.com.carlos.projeto.domain.User;
 import br.com.carlos.projeto.domain.repository.UserRepository;
 import br.com.carlos.projeto.infra.persistence.entity.UserEntity;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -30,7 +33,7 @@ public class UserService {
     }
 
     @Transactional
-    public ProfessionalProfileDTO registerProfessionalProfile(RegisterProfessionalProfileCommand cmd){
+    public ProfessionalProfileDTO registerProfessionalProfile(RegisterProfessionalProfileCommand cmd) {
         ProfessionalProfile profile = new ProfessionalProfile(cmd.description());
         User user = auth.getCurrentAuthenticatedUser();
         user.setProfessionalProfile(profile);
@@ -44,14 +47,20 @@ public class UserService {
     }
 
     @Transactional
-    public UserDTO findById(Long id){
+    public UserDTO findById(Long id) {
         try {
             return uMapper.toDTO(uMapper.fromEntity(repo.findById(id)));
 
-        } catch (NoSuchElementException ex){
+        } catch (NoSuchElementException ex) {
             throw new NoSuchElementException("User not found with id: " + id);
         }
 
 
-        }
+    }
+
+    @Transactional
+    public Page<UserDTO> findAll(Pageable pageable) {
+        Page<UserEntity> userEntities = repo.findAll(pageable);
+        return userEntities.map(entity -> uMapper.toDTO(uMapper.fromEntity(entity)));
+    }
 }
