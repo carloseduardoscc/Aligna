@@ -12,10 +12,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class SecurityErrorHandlerController {
 
     @RequestMapping("/security-error-handler")
-    public void handleError(HttpServletRequest request) {
+    public void handleError(HttpServletRequest request) throws Exception{
         Throwable exception = (Throwable) request.getAttribute("javax.servlet.error.exception");
-        if (exception != null)
-            throw new AuthenticationException("Usuário ou senha inválidos"); // vai cair no @ControllerAdvice
+        throw (Exception) request.getAttribute("javax.servlet.error.exception");
     }
 }
 

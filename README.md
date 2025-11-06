@@ -58,50 +58,23 @@ cd Aligna
 mvnw spring-boot:run
 ```
 
+<h3>Acessing Swagger Documentation</h3>
+After starting the application, you can access the Swagger documentation at:
+
+```
+http://localhost:8080/swagger-ui/index.html
+```
+
 <h2 id="routes">📍 API Endpoints</h2>
 
 ​
 | route               | description                                          
 |----------------------|-----------------------------------------------------
-| <kbd>POST /auth/register</kbd>     | register a new user [response details](#post-auth-detail)
-| <kbd>POST /auth/login</kbd>     | authenticate a user [request details](#post-auth-login)
-| <kbd>GET /auth/me</kbd>     | get information about logged user [request details](#get-auth-me)
-
-<h3 id="post-auth-register">POST /auth/register</h3>
-
-**REQUEST**
-```json
-{
-  "name": "Carlos Eduardo",
-  "email": "carlos@gmail.com",
-  "password": "123456789"
-}
-```
-
-<h3 id="post-auth-login">POST /auth/login</h3>
-
-**REQUEST**
-```json
-{
-  "login": "carlos@gmail.com",
-  "password": "123456789"
-}
-```
-
-**RESPONSE**
-```json
-{
-  "token": "OwoMRHsaQwyAgVoc3OXmL1JhMVUYXGGBbCTK0GBgiYitwQwjf0gVoBmkbuyy0pSi"
-}
-```
-
-<h3 id="get-auth-me">GET /auth/me</h3>
-
-**RESPONSE**
-```json
-{
-  "id": "1",
-  "name": "Carlos Eduardo",
-  "email": "carlos@gmail.com"
-}
-```
+| <kbd>POST /auth/register</kbd>     | register a new user\
+| <kbd>POST /auth/login</kbd>     | authenticate a user
+| <kbd>GET /me/profile</kbd>     | get information about logged user
+| <kbd>POST /me/professional-profile</kbd>     | register a professional profile
+| <kbd>GET /users/{id}</kbd>     | find a user by ID
+| <kbd>GET /users/page={page}&size={size}&sort={sorting_att},{asc,desc}</kbd>     | find profiles with pagination and sorting
+| <kbd>GET /professional-profile/{id}</kbd>     | find a profile by ID
+| <kbd>GET /professional-profile/page={page}&size={size}&sort={sorting_att},{asc,desc}</kbd>     | find profiles with pagination and sorting

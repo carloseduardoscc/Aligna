@@ -5,6 +5,7 @@ import br.com.carlos.projeto.application.command.RegisterUserCommand;
 import br.com.carlos.projeto.application.dto.LoginResponseDTO;
 import br.com.carlos.projeto.application.dto.UserDTO;
 import br.com.carlos.projeto.application.mapper.UserMapper;
+import br.com.carlos.projeto.domain.User;
 import br.com.carlos.projeto.domain.repository.UserRepository;
 import br.com.carlos.projeto.infra.persistence.entity.UserEntity;
 import br.com.carlos.projeto.infra.security.AuthUser;
@@ -47,7 +48,7 @@ public class AuthenticationService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UserDetails userDetails = mapper.toAuth(mapper.fromEntity(repo.findByEmail(username)));
         if (userDetails == null) {
-            throw new UsernameNotFoundException(username);
+            throw new UsernameNotFoundException("Usuário com e-mail " + username + " não encontrado!");
         }
         return userDetails;
     }
@@ -78,18 +79,15 @@ public class AuthenticationService implements UserDetailsService {
         return mapper.toDTO(mapper.fromEntity(UserSaved));
     }
 
-    public UserDTO me() {
-        return mapper.toDTO(mapper.fromEntity(repo.findById(getCurrentAuthenticatedUser().getId())));
-    }
-
-    protected AuthUser getCurrentAuthenticatedUser() {
+    protected User getCurrentAuthenticatedUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
         if (auth == null || !(auth.getPrincipal() instanceof AuthUser)) {
             throw new AuthenticationException("É necessário estar autenticado");
         }
 
-        return (AuthUser) auth.getPrincipal();
+        AuthUser authUser = (AuthUser) auth.getPrincipal();
+        return mapper.fromEntity(repo.findById((authUser.getId())));
     }
 
     private void validateEmailIsNotDuplicated(String email) {

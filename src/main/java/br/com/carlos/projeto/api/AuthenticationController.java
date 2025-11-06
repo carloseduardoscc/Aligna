@@ -25,23 +25,17 @@ public class AuthenticationController {
         this.service = userService;
     }
 
+    @Operation(summary = "Autentica um usuário e retorna um token JWT.")
     @PostMapping("/login")
     public ResponseEntity login(@RequestBody @Valid LoginCommand cmd) {
         LoginResponseDTO response = service.login(cmd);
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "Registra um novo usuário no sistema.")
     @PostMapping("/register")
     public ResponseEntity<UserDTO> registerUser(HttpServletRequest request, @RequestBody @Valid RegisterUserCommand cmd) {
         UserDTO dto = service.register(cmd);
-        return ResponseEntity.created(URI.create("")).body(dto);
+        return ResponseEntity.created(URI.create("/users/"+dto.id())).body(dto);
     }
-
-    @Operation(summary = "Traz informações sobre o usuário autenticado")
-    @GetMapping("/me")
-    public ResponseEntity<UserDTO> me() {
-        UserDTO user = service.me();
-        return ResponseEntity.ok(user);
-    }
-
 }
