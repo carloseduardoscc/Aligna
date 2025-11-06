@@ -72,7 +72,9 @@ http://localhost:8080/swagger-ui/index.html
 |----------------------|-----------------------------------------------------
 | <kbd>POST /auth/register</kbd>     | register a new user\
 | <kbd>POST /auth/login</kbd>     | authenticate a user
-| <kbd>GET /auth/me</kbd>     | get information about logged user
-| <kbd>GET /users/{id}</kbd>     | find a user by ID 
-| <kbd>GET /users/page={page}&size={size}&sort={sorting_att},{asc,desc}</kbd>     | find users with pagination and sorting
-| <kbd>POST /users/professional-profile</kbd>     | register a professional profile 
+| <kbd>GET /me/profile</kbd>     | get information about logged user
+| <kbd>POST /me/professional-profile</kbd>     | register a professional profile
+| <kbd>GET /users/{id}</kbd>     | find a user by ID
+| <kbd>GET /users/page={page}&size={size}&sort={sorting_att},{asc,desc}</kbd>     | find profiles with pagination and sorting
+| <kbd>GET /professional-profile/{id}</kbd>     | find a profile by ID
+| <kbd>GET /professional-profile/page={page}&size={size}&sort={sorting_att},{asc,desc}</kbd>     | find profiles with pagination and sorting
