@@ -14,6 +14,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.NoSuchElementException;
 
@@ -83,7 +84,7 @@ public class ControllerExceptionHandler {
      * NOT FOUND - 404 <br>
      * Recurso solicitado não foi encontrado.
      */
-    @ExceptionHandler(NoSuchElementException.class)
+    @ExceptionHandler({NoResourceFoundException.class, NoSuchElementException.class})
     public ResponseEntity<StandardError> handleNotFound(Exception e, HttpServletRequest request) {
         HttpStatus status = HttpStatus.NOT_FOUND;
         StandardError err = new StandardError(
