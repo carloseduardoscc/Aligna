@@ -43,4 +43,16 @@ public class ProfessionalProfile {
     public String getDescription() {
         return description;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        ProfessionalProfile that = (ProfessionalProfile) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
 }
