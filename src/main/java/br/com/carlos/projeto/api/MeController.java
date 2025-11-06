@@ -10,6 +10,8 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
+
 @RestController
 @RequestMapping("/me")
 @Tag(name = "Ações do usuário autenticado")
@@ -33,6 +35,6 @@ public class MeController {
     @PostMapping("/professional-profile")
     public ResponseEntity<ProfessionalProfileDTO> registerProfessionalProfile(@RequestBody @Valid RegisterProfessionalProfileCommand cmd){
         ProfessionalProfileDTO response = meService.registerProfessionalProfile(cmd);
-        return ResponseEntity.created(null).body(response);
+        return ResponseEntity.created(URI.create("/professional-profiles/"+response.id())).body(response);
     }
 }

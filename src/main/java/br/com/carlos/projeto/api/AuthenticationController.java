@@ -36,6 +36,6 @@ public class AuthenticationController {
     @PostMapping("/register")
     public ResponseEntity<UserDTO> registerUser(HttpServletRequest request, @RequestBody @Valid RegisterUserCommand cmd) {
         UserDTO dto = service.register(cmd);
-        return ResponseEntity.created(URI.create("")).body(dto);
+        return ResponseEntity.created(URI.create("/users/"+dto.id())).body(dto);
     }
 }
