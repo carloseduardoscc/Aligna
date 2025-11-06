@@ -79,10 +79,6 @@ public class AuthenticationService implements UserDetailsService {
         return mapper.toDTO(mapper.fromEntity(UserSaved));
     }
 
-    public UserDTO me() {
-        return mapper.toDTO(mapper.fromEntity(repo.findById(getCurrentAuthenticatedUser().getId())));
-    }
-
     protected User getCurrentAuthenticatedUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 

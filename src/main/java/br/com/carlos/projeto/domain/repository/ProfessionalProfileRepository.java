@@ -1,5 +1,10 @@
 package br.com.carlos.projeto.domain.repository;
 
+import br.com.carlos.projeto.infra.persistence.entity.ProfessionalProfileEntity;
+import org.springframework.data.domain.Page;
+
+import org.springframework.data.domain.Pageable;
+
 public interface ProfessionalProfileRepository<T> {
     public T save(T object);
 
@@ -7,7 +12,7 @@ public interface ProfessionalProfileRepository<T> {
 
     public T findById(Long id);
 
-    public Iterable<T> findAll();
-
     public void deleteById(Long id);
+
+    public Page<ProfessionalProfileEntity> findAll(Pageable pageable);
 }

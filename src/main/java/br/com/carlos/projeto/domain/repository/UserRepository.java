@@ -15,7 +15,7 @@ public interface UserRepository<T> {
 
     public void deleteById(Long id);
 
-    T findByEmail(String email);
+    public T findByEmail(String email);
 
-    Page<UserEntity> findAll(Pageable pageable);
+    public Page<UserEntity> findAll(Pageable pageable);
 }

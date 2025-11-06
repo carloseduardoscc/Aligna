@@ -22,6 +22,7 @@ public interface UserMapper {
 
     public UserEntity toEntity(User user);
 
+    @Mapping(source = "professionalProfile.id", target = "professionalProfileId")
     public UserDTO toDTO(User user);
 
     public AuthUser toAuth(User user);

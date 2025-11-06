@@ -15,35 +15,16 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 
 @Service
 public class UserService {
 
     private UserMapper uMapper;
-    private ProfessionalProfileMapper pMapper;
     private UserRepository<UserEntity> repo;
-    private AuthenticationService auth;
 
-    public UserService(UserMapper uMapper, ProfessionalProfileMapper pMapper, UserRepository<UserEntity> repo, AuthenticationService auth) {
+    public UserService(UserMapper uMapper, UserRepository<UserEntity> repo) {
         this.uMapper = uMapper;
-        this.pMapper = pMapper;
         this.repo = repo;
-        this.auth = auth;
-    }
-
-    @Transactional
-    public ProfessionalProfileDTO registerProfessionalProfile(RegisterProfessionalProfileCommand cmd) {
-        ProfessionalProfile profile = new ProfessionalProfile(cmd.description());
-        User user = auth.getCurrentAuthenticatedUser();
-        user.setProfessionalProfile(profile);
-        profile.setUser(user);
-
-        UserEntity userEntity = uMapper.toEntity(user);
-        userEntity = repo.save(userEntity);
-        user = uMapper.fromEntity(userEntity);
-
-        return pMapper.toDTO(user.getProfessionalProfile());
     }
 
     @Transactional
@@ -52,7 +33,7 @@ public class UserService {
             return uMapper.toDTO(uMapper.fromEntity(repo.findById(id)));
 
         } catch (NoSuchElementException ex) {
-            throw new NoSuchElementException("User not found with id: " + id);
+            throw new NoSuchElementException("Usuário com id: " + id+" não encontrado.");
         }
 
 

@@ -6,11 +6,16 @@ import br.com.carlos.projeto.infra.persistence.entity.ProfessionalProfileEntity;
 import br.com.carlos.projeto.infra.persistence.entity.UserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import org.springframework.data.domain.Pageable;
+
+
 @Repository
 interface ProfessionalProfileJpaRepositoryImp extends JpaRepository<ProfessionalProfileEntity, Long> {
+    public Page<ProfessionalProfileEntity> findAll(Pageable pageable);
 }
 
 @Repository
@@ -40,4 +45,8 @@ public class ProfessionalProfileJpaImpRepository implements ProfessionalProfileR
         repo.deleteById(id);
     }
 
+    @Override
+    public Page<ProfessionalProfileEntity> findAll(Pageable pageable) {
+        return repo.findAll(pageable);
+    }
 }
