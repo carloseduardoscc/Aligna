@@ -11,14 +11,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-public class UserControllerIntegrationTest {
+public class ProfessionalProfileControllerIntegrationTest {
 
     @Autowired
     MockMvc mock;
@@ -39,21 +40,18 @@ public class UserControllerIntegrationTest {
                 }
                 """.formatted(existingUserEmail, existingUserPassword);
 
-        String registerResponse = mock.perform(post("/auth/register")
+        mock.perform(post("/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(body))
-                .andExpect(status().isCreated())
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
-
-        createdUserId = Long.parseLong(JsonPath.read(registerResponse, "$.id"));
+                .andExpect(status().isCreated());
     }
 
     @Nested
     class LoggedInTests {
 
         String token;
+        Long professionalProfileId;
+        String existingProfileDescription = "Descrição teste.";
 
         @BeforeEach
         void setup() throws Exception {
@@ -74,26 +72,40 @@ public class UserControllerIntegrationTest {
                     .getContentAsString();
 
             token = token.replace("{\"token\":\"", "").replace("\"}", "");
+
+            String bodyProfile ="""
+                    {
+                        "description":"%s"
+                    }""".formatted(existingProfileDescription);
+
+            String registerProfileResponse = mock.perform(post("/me/professional-profile")
+                            .header("Authorization", "Bearer " + token)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(bodyProfile))
+                    .andExpect(status().isCreated())
+                    .andReturn()
+                    .getResponse()
+                    .getContentAsString();
+
+            professionalProfileId = Long.parseLong(JsonPath.read(registerProfileResponse, "$.id").toString());
         }
 
         @Test
-        void buscarUsuarioDeveRetornar200() throws Exception {
-            mock.perform(get("/users/"+createdUserId)
+        void buscarPerfilDeveRetornar200() throws Exception {
+            mock.perform(get("/professional-profiles/"+professionalProfileId)
                             .header("Authorization", "Bearer " + token)
                             .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.email").value(existingUserEmail));
+                    .andExpect(jsonPath("$.description").value(existingProfileDescription));
         }
 
         @Test
-        void buscarTodosUsuariosDeveRetornar200() throws Exception {
-            mock.perform(get("/users")
+        void buscarTodosPerfisDeveRetornar200() throws Exception {
+            mock.perform(get("/professional-profiles")
                             .header("Authorization", "Bearer " + token)
                             .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.content").isArray());
         }
     }
-
-
 }

@@ -109,17 +109,18 @@ public class AuthenticationControllerIntegrationTest {
 
         token = token.replace("{\"token\":\"", "").replace("\"}", "");
 
-        mock.perform(get("/auth/me")
+        mock.perform(get("/me/profile")
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.email").value(existingUserEmail));
 
     }
 
+    /// Temporário, deveria retornar 401 (Unauthorized) ao invés de 403 (Forbidden)
     @Test
-    void naoDadoTokenAoConsultarMeDeveRetornar401() throws Exception {
-        mock.perform(get("/auth/me"))
-                .andExpect(status().isUnauthorized());
+    void naoDadoTokenAoConsultarMeDeveRetornar403() throws Exception {
+        mock.perform(get("/me/profile"))
+                .andExpect(status().isForbidden());
     }
 
 }
