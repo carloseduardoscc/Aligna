@@ -2,12 +2,17 @@ package br.com.carlos.projeto.domain;
 
 import br.com.carlos.projeto.domain.exceptions.DomainException;
 
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+
 public class ProfessionalProfile {
     Long id;
     String description;
 
     // External
     User user;
+    Set<Service> services = new HashSet<>();
 
     public ProfessionalProfile(String description) {
         setDescription(description);
@@ -16,6 +21,20 @@ public class ProfessionalProfile {
     private void validateNotBlank(String name) {
         if (name == null || name.isBlank()){
             throw new DomainException("Nome não deve ser nulo ou estar em branco");
+        }
+    }
+
+    public void addService(Service service) {
+        services.add(service);
+    }
+
+    public void addServices(Set<Service> services) {
+        this.services.addAll(services);
+    }
+
+    public void removeService(Service service) {
+        if (services != null) {
+            services.remove(service);
         }
     }
 
@@ -30,6 +49,10 @@ public class ProfessionalProfile {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Set<Service> getServices() {
+        return new HashSet<Service>(services);
     }
 
     public User getUser() {

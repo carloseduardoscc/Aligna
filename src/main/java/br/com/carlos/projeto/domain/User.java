@@ -2,6 +2,8 @@ package br.com.carlos.projeto.domain;
 
 import br.com.carlos.projeto.domain.exceptions.DomainException;
 
+import java.util.Objects;
+
 public class User {
     private Long id;
     private String name;
