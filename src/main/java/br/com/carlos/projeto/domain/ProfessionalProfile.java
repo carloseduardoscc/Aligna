@@ -25,11 +25,14 @@ public class ProfessionalProfile {
     }
 
     public void addService(Service service) {
+        if (this.services.stream().anyMatch(x->x.getTitle().equals(service.title))){
+            throw new DomainException("Serviço já cadastrado para este perfil profissional");
+        }
         services.add(service);
     }
 
     public void addServices(Set<Service> services) {
-        this.services.addAll(services);
+        services.forEach(this::addService);
     }
 
     public void removeService(Service service) {

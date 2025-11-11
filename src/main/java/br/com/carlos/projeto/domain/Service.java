@@ -21,11 +21,11 @@ public class Service {
     ProfessionalProfile professionalProfile;
 
     public Service(String title, String description, LocalTime availableFrom, LocalTime availableUntil, Set<DayOfWeek> availableDays, ProfessionalProfile professionalProfile) {
-        this.title = title;
-        this.description = description;
-        this.availableFrom = availableFrom;
-        this.availableUntil = availableUntil;
-        this.availableDays = availableDays;
+        setTitle(title);
+        setDescription(description);
+        setAvailableFrom(availableFrom);
+        setAvailableUntil(availableUntil);
+        setAvailableDays(availableDays);
         this.professionalProfile = professionalProfile;
     }
 
@@ -68,6 +68,10 @@ public class Service {
             throw new DomainException("Dias disponíveis devem conter ao menos um dia da semana");
         }
         this.availableDays = availableDays;
+    }
+
+    public void setProfessionalProfile(ProfessionalProfile professionalProfile) {
+        this.professionalProfile = professionalProfile;
     }
 
     public Long getId() {
