@@ -2,7 +2,9 @@ package br.com.carlos.projeto.api;
 
 import br.com.carlos.projeto.application.MeService;
 import br.com.carlos.projeto.application.command.RegisterProfessionalProfileCommand;
+import br.com.carlos.projeto.application.command.RegisterServiceCommand;
 import br.com.carlos.projeto.application.dto.ProfessionalProfileDTO;
+import br.com.carlos.projeto.application.dto.ServiceDTO;
 import br.com.carlos.projeto.application.dto.UserDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -36,5 +38,11 @@ public class MeController {
     public ResponseEntity<ProfessionalProfileDTO> registerProfessionalProfile(@RequestBody @Valid RegisterProfessionalProfileCommand cmd){
         ProfessionalProfileDTO response = meService.registerProfessionalProfile(cmd);
         return ResponseEntity.created(URI.create("/professional-profiles/"+response.id())).body(response);
+    }
+
+    @PostMapping("/services")
+    public ResponseEntity<ServiceDTO> registerService(@RequestBody @Valid RegisterServiceCommand cmd){
+        ServiceDTO response = meService.registerService(cmd);
+        return ResponseEntity.created(URI.create("/services/"+response.id())).body(response);
     }
 }
