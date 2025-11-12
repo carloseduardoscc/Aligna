@@ -7,6 +7,7 @@ import br.com.carlos.projeto.application.dto.ProfessionalProfileDTO;
 import br.com.carlos.projeto.application.dto.ServiceDTO;
 import br.com.carlos.projeto.application.dto.UserDTO;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -25,24 +26,27 @@ public class MeController {
         this.meService = meService;
     }
 
-
-    @Operation(summary = "Traz informações sobre o usuário autenticado")
+    @Operation(summary = "Traz informações sobre o usuário autenticado",
+            security = @SecurityRequirement(name = "bearerAuth"))
     @GetMapping("/profile")
     public ResponseEntity<UserDTO> me() {
         UserDTO user = meService.me();
         return ResponseEntity.ok(user);
     }
 
-    @Operation(summary = "Registra o perfil profissional do usuário autenticado")
+    @Operation(summary = "Registra o perfil profissional do usuário autenticado",
+            security = @SecurityRequirement(name = "bearerAuth"))
     @PostMapping("/professional-profile")
-    public ResponseEntity<ProfessionalProfileDTO> registerProfessionalProfile(@RequestBody @Valid RegisterProfessionalProfileCommand cmd){
+    public ResponseEntity<ProfessionalProfileDTO> registerProfessionalProfile(@RequestBody @Valid RegisterProfessionalProfileCommand cmd) {
         ProfessionalProfileDTO response = meService.registerProfessionalProfile(cmd);
-        return ResponseEntity.created(URI.create("/professional-profiles/"+response.id())).body(response);
+        return ResponseEntity.created(URI.create("/professional-profiles/" + response.id())).body(response);
     }
 
+    @Operation(summary = "Registra um serviço para o usuário autenticado",
+            security = @SecurityRequirement(name = "bearerAuth"))
     @PostMapping("/services")
-    public ResponseEntity<ServiceDTO> registerService(@RequestBody @Valid RegisterServiceCommand cmd){
+    public ResponseEntity<ServiceDTO> registerService(@RequestBody @Valid RegisterServiceCommand cmd) {
         ServiceDTO response = meService.registerService(cmd);
-        return ResponseEntity.created(URI.create("/services/"+response.id())).body(response);
+        return ResponseEntity.created(URI.create("/services/" + response.id())).body(response);
     }
 }
