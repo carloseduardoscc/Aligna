@@ -6,7 +6,7 @@ import br.com.carlos.projeto.infra.persistence.entity.ProfessionalProfileEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = ServiceMapper.class)
 public interface ProfessionalProfileMapper {
 
     @Mapping(target = "user.professionalProfile", ignore = true)

@@ -23,6 +23,7 @@ public class UserControllerIntegrationTest {
     @Autowired
     MockMvc mock;
 
+    String existingUserName = "Usuário teste";
     String existingUserEmail = "usuarioteste@exemplo.com";
     String existingUserPassword = "123456789";
 
@@ -35,9 +36,9 @@ public class UserControllerIntegrationTest {
                 {
                     "email": "%s",
                     "password": "%s",
-                    "name": "Usuário teste"
+                    "name": "%s"
                 }
-                """.formatted(existingUserEmail, existingUserPassword);
+                """.formatted(existingUserEmail, existingUserPassword, existingUserName);
 
         String registerResponse = mock.perform(post("/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -82,7 +83,7 @@ public class UserControllerIntegrationTest {
                             .header("Authorization", "Bearer " + token)
                             .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.email").value(existingUserEmail));
+                    .andExpect(jsonPath("$.name").value(existingUserName));
         }
 
         @Test

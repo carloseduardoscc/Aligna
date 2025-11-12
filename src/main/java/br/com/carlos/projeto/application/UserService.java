@@ -2,6 +2,7 @@ package br.com.carlos.projeto.application;
 
 import br.com.carlos.projeto.application.command.RegisterProfessionalProfileCommand;
 import br.com.carlos.projeto.application.dto.ProfessionalProfileDTO;
+import br.com.carlos.projeto.application.dto.PublicUserDTO;
 import br.com.carlos.projeto.application.dto.UserDTO;
 import br.com.carlos.projeto.application.mapper.ProfessionalProfileMapper;
 import br.com.carlos.projeto.application.mapper.UserMapper;
@@ -28,9 +29,9 @@ public class UserService {
     }
 
     @Transactional
-    public UserDTO findById(Long id) {
+    public PublicUserDTO findById(Long id) {
         try {
-            return uMapper.toDTO(uMapper.fromEntity(repo.findById(id)));
+            return uMapper.toPublicDTO(uMapper.fromEntity(repo.findById(id)));
 
         } catch (NoSuchElementException ex) {
             throw new NoSuchElementException("Usuário com id: " + id+" não encontrado.");
@@ -40,8 +41,8 @@ public class UserService {
     }
 
     @Transactional
-    public Page<UserDTO> findAll(Pageable pageable) {
+    public Page<PublicUserDTO> findAll(Pageable pageable) {
         Page<UserEntity> userEntities = repo.findAll(pageable);
-        return userEntities.map(entity -> uMapper.toDTO(uMapper.fromEntity(entity)));
+        return userEntities.map(entity -> uMapper.toPublicDTO(uMapper.fromEntity(entity)));
     }
 }

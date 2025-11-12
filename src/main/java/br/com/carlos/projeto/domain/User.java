@@ -2,6 +2,8 @@ package br.com.carlos.projeto.domain;
 
 import br.com.carlos.projeto.domain.exceptions.DomainException;
 
+import java.util.Objects;
+
 public class User {
     private Long id;
     private String name;
@@ -66,5 +68,17 @@ public class User {
 
     public String getPassword() {
         return password;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(id, user.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 }
