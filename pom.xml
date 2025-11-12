@@ -18,7 +18,7 @@
 
     <groupId>br.com.carlos.projeto</groupId>
     <artifactId>Aligna</artifactId>
-    <version>0.1.0</version>
+    <version>0.3.0</version>
     <name>Aligna</name>
     <description>Aligna é um projeto pessoal de estudo, uma API backend feita em Java que conecta profissionais e
         clientes através de agendamentos de de serviços.
