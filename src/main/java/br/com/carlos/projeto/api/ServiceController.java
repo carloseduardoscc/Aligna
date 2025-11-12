@@ -3,7 +3,9 @@ package br.com.carlos.projeto.api;
 import br.com.carlos.projeto.application.ServiceService;
 import br.com.carlos.projeto.application.dto.ServiceDTO;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -27,14 +29,17 @@ public class ServiceController {
 
     @Operation(summary = "Busca um usuário pelo ID")
     @GetMapping("/{id}")
-    public ResponseEntity<ServiceDTO> findById(@PathVariable Long id){
+    public ResponseEntity<ServiceDTO> findById(@PathVariable Long id) {
         ServiceDTO response = serviceService.findById(id);
         return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "Busca todos os serviços com paginação")
     @GetMapping
-    public ResponseEntity<Page<ServiceDTO>> findAll(@PageableDefault(size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable){
+    public ResponseEntity<Page<ServiceDTO>> findAll(@PageableDefault(size = 10, sort = "id", direction = Sort.Direction.ASC)
+                                                    @ParameterObject
+                                                    @Parameter(description = "Parâmetros de paginação e ordenação. Exemplo: ?page=0&size=10&sort=title,asc")
+                                                    Pageable pageable) {
         Page<ServiceDTO> response = serviceService.findAll(pageable);
         return ResponseEntity.ok(response);
     }

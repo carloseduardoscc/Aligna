@@ -2,6 +2,7 @@ package br.com.carlos.projeto.application.mapper;
 
 import br.com.carlos.projeto.application.command.RegisterUserCommand;
 import br.com.carlos.projeto.application.dto.ProfessionalProfileDTO;
+import br.com.carlos.projeto.application.dto.PublicUserDTO;
 import br.com.carlos.projeto.application.dto.UserDTO;
 import br.com.carlos.projeto.domain.ProfessionalProfile;
 import br.com.carlos.projeto.domain.User;
@@ -24,6 +25,9 @@ public interface UserMapper {
 
     @Mapping(source = "professionalProfile.id", target = "professionalProfileId")
     public UserDTO toDTO(User user);
+
+    @Mapping(source = "professionalProfile.id", target = "professionalProfileId")
+    public PublicUserDTO toPublicDTO(User user);
 
     public AuthUser toAuth(User user);
 

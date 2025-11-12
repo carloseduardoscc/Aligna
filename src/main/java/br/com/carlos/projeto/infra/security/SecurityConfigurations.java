@@ -52,6 +52,7 @@ public class SecurityConfigurations {
                 // Mapeamento de autorizações
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/security-error-handler","/h2-console/**", "/auth/**", "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                        .requestMatchers("/services/**","/users/**", "/professional-profiles/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 // Pre filtragem da requisição para validação de login com token
