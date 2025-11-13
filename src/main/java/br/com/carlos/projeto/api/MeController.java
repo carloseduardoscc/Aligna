@@ -3,7 +3,9 @@ package br.com.carlos.projeto.api;
 import br.com.carlos.projeto.application.MeService;
 import br.com.carlos.projeto.application.command.RegisterProfessionalProfileCommand;
 import br.com.carlos.projeto.application.command.RegisterServiceCommand;
+import br.com.carlos.projeto.application.command.RequestReserveCommand;
 import br.com.carlos.projeto.application.dto.ProfessionalProfileDTO;
+import br.com.carlos.projeto.application.dto.ReserveDTO;
 import br.com.carlos.projeto.application.dto.ServiceDTO;
 import br.com.carlos.projeto.application.dto.UserDTO;
 import io.swagger.v3.oas.annotations.Operation;
@@ -48,5 +50,10 @@ public class MeController {
     public ResponseEntity<ServiceDTO> registerService(@RequestBody @Valid RegisterServiceCommand cmd) {
         ServiceDTO response = meService.registerService(cmd);
         return ResponseEntity.created(URI.create("/services/" + response.id())).body(response);
+    }
+
+    public ResponseEntity<ReserveDTO> requestReserve(@RequestBody @Valid RequestReserveCommand cmd) {
+        ReserveDTO response = meService.requestReserve(cmd);
+        return ResponseEntity.created(URI.create("/reserves/" + response.id())).body(response);
     }
 }

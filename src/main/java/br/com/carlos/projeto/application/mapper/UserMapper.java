@@ -12,13 +12,14 @@ import br.com.carlos.projeto.infra.security.AuthUser;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring", uses = ProfessionalProfileMapper.class)
+@Mapper(componentModel = "spring", uses = {ProfessionalProfileMapper.class, ReserveMapper.class})
 public interface UserMapper {
     /// User Mappings
 
     @Mapping(target = "professionalProfile.user", ignore = true)
     public User fromEntity(UserEntity userEntity);
 
+    @Mapping(target = "professionalProfile.user", ignore = true)
     public User fromRegisterUserCommand(RegisterUserCommand cmd);
 
     public UserEntity toEntity(User user);

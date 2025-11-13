@@ -46,7 +46,7 @@ public class ProfessionalProfileService {
     @Transactional
     public Page<ProfessionalProfileDTO> findAll(Pageable pageable){
         Page<ProfessionalProfileDTO> profiles = repo.findAll(pageable)
-                .map(entity -> pMapper.toDTO(pMapper.fromEntity(entity)));
+                .map(entity -> pMapper.toDTO(pMapper.fromEntity((ProfessionalProfileEntity) entity)));
         return profiles;
     }
 }
