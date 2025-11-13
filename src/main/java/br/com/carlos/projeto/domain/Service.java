@@ -4,9 +4,7 @@ import br.com.carlos.projeto.domain.exceptions.DomainException;
 
 import java.time.DayOfWeek;
 import java.time.LocalTime;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 public class Service {
     Long id;
@@ -19,6 +17,7 @@ public class Service {
 
     // External
     ProfessionalProfile professionalProfile;
+    Set<Reserve> reserves = new HashSet<>();
 
     public Service(String title, String description, LocalTime availableFrom, LocalTime availableUntil, Set<DayOfWeek> availableDays, ProfessionalProfile professionalProfile) {
         setTitle(title);
@@ -26,13 +25,24 @@ public class Service {
         setAvailableFrom(availableFrom);
         setAvailableUntil(availableUntil);
         setAvailableDays(availableDays);
-        this.professionalProfile = professionalProfile;
+        setProfessionalProfile(professionalProfile);
     }
 
     private void validateNotBlank(String name) {
         if (name == null || name.isBlank()){
             throw new DomainException("Nome não deve ser nulo ou estar em branco");
         }
+    }
+
+    public void addReserve(Reserve reserve) {
+        if (reserve == null) {
+            throw new DomainException("Reserva não deve ser nula");
+        }
+        this.reserves.add(reserve);
+    }
+
+    public Set<Reserve> getReserves() {
+        return new HashSet<Reserve>(reserves);
     }
 
     public void setId(Long id) {
