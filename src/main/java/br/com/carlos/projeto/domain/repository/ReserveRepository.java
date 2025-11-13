@@ -4,7 +4,7 @@ import br.com.carlos.projeto.infra.persistence.entity.UserEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-public interface UserRepository<T> {
+public interface ReserveRepository<T> {
     public T save(T object);
 
     public Iterable<T> saveAll(Iterable<T> objects);

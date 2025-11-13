@@ -14,5 +14,5 @@ public interface ProfessionalProfileRepository<T> {
 
     public void deleteById(Long id);
 
-    public Page<ProfessionalProfileEntity> findAll(Pageable pageable);
+    public Page findAll(Pageable pageable);
 }
