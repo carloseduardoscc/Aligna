@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.Set;
+
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity(name = "user_tb")
@@ -20,4 +22,7 @@ public class UserEntity {
     // External
     @OneToOne(mappedBy = "user", cascade =  CascadeType.ALL)
     public ProfessionalProfileEntity professionalProfile;
+    @OneToMany(mappedBy = "applicant", cascade = CascadeType.ALL)
+    public Set<ReserveEntity> reserves;
+
 }
