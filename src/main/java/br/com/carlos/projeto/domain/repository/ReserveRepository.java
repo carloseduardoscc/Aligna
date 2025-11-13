@@ -15,7 +15,5 @@ public interface ReserveRepository<T> {
 
     public void deleteById(Long id);
 
-    public T findByEmail(String email);
-
     public Page findAll(Pageable pageable);
 }

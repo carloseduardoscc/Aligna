@@ -28,4 +28,6 @@ public class ServiceEntity {
     @ManyToOne
     @JoinColumn(name = "profile_id")
     ProfessionalProfileEntity professionalProfile;
+    @OneToMany(mappedBy = "service", cascade = CascadeType.ALL)
+    public Set<ReserveEntity> reserves;
 }
