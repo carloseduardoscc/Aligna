@@ -2,7 +2,9 @@ package br.com.carlos.projeto.domain;
 
 import br.com.carlos.projeto.domain.exceptions.DomainException;
 
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 public class User {
     private Long id;
@@ -12,6 +14,7 @@ public class User {
 
     //External
     ProfessionalProfile professionalProfile;
+    Set<Reserve> reserves = new HashSet<>();
 
     public User(String name, String email, String password) {
         setName(name);
@@ -23,6 +26,17 @@ public class User {
         if (name == null || name.isBlank()){
             throw new DomainException("Nome não deve ser nulo ou estar em branco");
         }
+    }
+
+    public void addReserve(Reserve reserve) {
+        if (reserve == null) {
+            throw new DomainException("Reserva não deve ser nula");
+        }
+        this.reserves.add(reserve);
+    }
+
+    public Set<Reserve> getReserves() {
+        return new HashSet<Reserve>(reserves);
     }
 
     public void setProfessionalProfile(ProfessionalProfile professionalProfile) {
