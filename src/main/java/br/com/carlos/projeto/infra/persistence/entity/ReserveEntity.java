@@ -17,6 +17,7 @@ public class ReserveEntity {
     public Long id;
 
     public LocalDateTime dateTime;
+    @Enumerated(EnumType.STRING)
     public ReserveStatus status;
 
     //External

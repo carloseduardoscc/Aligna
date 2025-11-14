@@ -10,10 +10,10 @@ import org.mapstruct.Mapping;
 public interface ProfessionalProfileMapper {
 
     @Mapping(target = "user.professionalProfile", ignore = true)
-    ProfessionalProfileEntity toEntity(ProfessionalProfile profile);
+    ProfessionalProfile fromEntity(ProfessionalProfileEntity entity);
 
     @Mapping(target = "user.professionalProfile", ignore = true)
-    ProfessionalProfile fromEntity(ProfessionalProfileEntity entity);
+    ProfessionalProfileEntity toEntity(ProfessionalProfile profile);
 
     @Mapping(source = "user.id", target = "userId")
     ProfessionalProfileDTO toDTO(ProfessionalProfile profile);
