@@ -52,6 +52,9 @@ public class MeController {
         return ResponseEntity.created(URI.create("/services/" + response.id())).body(response);
     }
 
+    @Operation(summary = "Solicita uma reserva de um serviço para o usuário autenticado",
+            security = @SecurityRequirement(name = "bearerAuth"))
+    @PostMapping("/reserves")
     public ResponseEntity<ReserveDTO> requestReserve(@RequestBody @Valid RequestReserveCommand cmd) {
         ReserveDTO response = meService.requestReserve(cmd);
         return ResponseEntity.created(URI.create("/reserves/" + response.id())).body(response);

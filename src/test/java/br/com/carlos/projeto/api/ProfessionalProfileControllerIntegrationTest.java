@@ -73,7 +73,7 @@ public class ProfessionalProfileControllerIntegrationTest {
 
             token = token.replace("{\"token\":\"", "").replace("\"}", "");
 
-            String bodyProfile ="""
+            String bodyProfile = """
                     {
                         "description":"%s"
                     }""".formatted(existingProfileDescription);
@@ -92,7 +92,7 @@ public class ProfessionalProfileControllerIntegrationTest {
 
         @Test
         void buscarPerfilDeveRetornar200() throws Exception {
-            mock.perform(get("/professional-profiles/"+professionalProfileId)
+            mock.perform(get("/professional-profiles/" + professionalProfileId)
                             .header("Authorization", "Bearer " + token)
                             .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk())
