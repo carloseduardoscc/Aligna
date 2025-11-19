@@ -3,9 +3,6 @@ package br.com.carlos.projeto.api.exception;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
 
 import java.time.Instant;
 
@@ -23,12 +20,14 @@ public class StandardError {
     {
         timestamp = Instant.now();
     }
+
     public StandardError(Integer status, String error, String message, String path) {
         this.status = status;
         this.error = error;
         this.message = message;
         this.path = path;
     }
+
     public StandardError() {
     }
 

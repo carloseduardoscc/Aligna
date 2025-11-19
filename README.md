@@ -31,13 +31,11 @@
 - H2 Database
 - Swagger
 
-
 <h2 id="star_*ted">🚀 Getting started</h2>
 
 Ensure you have Java 21 installed, then just clone the repo and run the maven run command.
 
 <h3>Prerequisites</h3>
-
 
 - [Java 21](https://www.oracle.com/br/java/technologies/downloads/#java21)
 
@@ -68,16 +66,19 @@ http://localhost:8080/swagger-ui/index.html
 <h2 id="routes">📍 API Endpoints</h2>
 
 ​
-| route               | description                                          
+| route | description                                          
 |----------------------|-----------------------------------------------------
 | <kbd>POST /me/services</kbd>     | register a service as professional
 | <kbd>POST /me/professional-profile</kbd>     | register a professional profile
 | <kbd>GET /me/profile</kbd>     | get information about logged user
 | <kbd>POST /auth/register</kbd>     | register a new user\
 | <kbd>POST /auth/login</kbd>     | authenticate a user
-| <kbd>GET /users?page={page}&size={size}&sort={sorting_att},{asc,desc}</kbd>     | find profiles with pagination and sorting
+| <kbd>GET /users?page={page}&size={size}&sort={sorting_att},{asc,desc}</kbd>     | find profiles with pagination and
+sorting
 | <kbd>GET /users/{id}</kbd>     | find a user by ID
-| <kbd>GET /services?page={page}&size={size}&sort={sorting_att},{asc,desc}</kbd>     | find services with pagination and sorting
+| <kbd>GET /services?page={page}&size={size}&sort={sorting_att},{asc,desc}</kbd>     | find services with pagination and
+sorting
 | <kbd>GET /services/{id}</kbd>     | find a service by ID
 | <kbd>GET /professional-profile/{id}</kbd>     | find a profile by ID
-| <kbd>GET /professional-profile?page={page}&size={size}&sort={sorting_att},{asc,desc}</kbd>     | find profiles with pagination and sorting
+| <kbd>GET /professional-profile?page={page}&size={size}&sort={sorting_att},{asc,desc}</kbd>     | find profiles with
+pagination and sorting

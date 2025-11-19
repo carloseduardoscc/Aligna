@@ -1,12 +1,20 @@
 package br.com.carlos.projeto.domain;
 
 import br.com.carlos.projeto.domain.exceptions.DomainException;
+import jakarta.persistence.*;
+import lombok.EqualsAndHashCode;
 
 import java.time.DayOfWeek;
 import java.time.LocalTime;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
+@Entity(name = "service_tb")
 public class Service {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include
     Long id;
 
     String title;
@@ -16,8 +24,14 @@ public class Service {
     Set<DayOfWeek> availableDays;
 
     // External
+    @ManyToOne
+    @JoinColumn(name = "profile_id")
     ProfessionalProfile professionalProfile;
+    @OneToMany(mappedBy = "service", cascade = CascadeType.ALL)
     Set<Reserve> reserves = new HashSet<>();
+
+    public Service() {
+    }
 
     public Service(String title, String description, LocalTime availableFrom, LocalTime availableUntil, Set<DayOfWeek> availableDays, ProfessionalProfile professionalProfile) {
         setTitle(title);
@@ -29,7 +43,7 @@ public class Service {
     }
 
     private void validateNotBlank(String name) {
-        if (name == null || name.isBlank()){
+        if (name == null || name.isBlank()) {
             throw new DomainException("Nome não deve ser nulo ou estar em branco");
         }
     }
@@ -45,8 +59,16 @@ public class Service {
         return new HashSet<Reserve>(reserves);
     }
 
+    public Long getId() {
+        return id;
+    }
+
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
     }
 
     public void setTitle(String title) {
@@ -54,9 +76,17 @@ public class Service {
         this.title = title;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
     public void setDescription(String description) {
         validateNotBlank(description);
         this.description = description;
+    }
+
+    public LocalTime getAvailableFrom() {
+        return availableFrom;
     }
 
     public void setAvailableFrom(LocalTime availableFrom) {
@@ -66,11 +96,19 @@ public class Service {
         this.availableFrom = availableFrom;
     }
 
+    public LocalTime getAvailableUntil() {
+        return availableUntil;
+    }
+
     public void setAvailableUntil(LocalTime availableUntil) {
         if (availableFrom != null && availableUntil.isBefore(availableFrom)) {
             throw new DomainException("Horário de disponibilidade final não pode ser antes do horário inicial");
         }
         this.availableUntil = availableUntil;
+    }
+
+    public Set<DayOfWeek> getAvailableDays() {
+        return new HashSet<DayOfWeek>(availableDays);
     }
 
     public void setAvailableDays(Set<DayOfWeek> availableDays) {
@@ -80,36 +118,12 @@ public class Service {
         this.availableDays = availableDays;
     }
 
-    public void setProfessionalProfile(ProfessionalProfile professionalProfile) {
-        this.professionalProfile = professionalProfile;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public LocalTime getAvailableFrom() {
-        return availableFrom;
-    }
-
-    public LocalTime getAvailableUntil() {
-        return availableUntil;
-    }
-
-    public Set<DayOfWeek> getAvailableDays() {
-        return new HashSet<DayOfWeek>(availableDays);
-    }
-
     public ProfessionalProfile getProfessionalProfile() {
         return professionalProfile;
+    }
+
+    public void setProfessionalProfile(ProfessionalProfile professionalProfile) {
+        this.professionalProfile = professionalProfile;
     }
 
     @Override

@@ -141,7 +141,7 @@ public class ControllerExceptionHandler {
         StandardError err = new StandardError(
                 status.value(),
                 "Erro interno no servidor - " + e.getClass().getSimpleName(),
-                "Internal Exception = "+e.getClass().getSimpleName()+"\n"+e.getMessage(),
+                "Internal Exception = " + e.getClass().getSimpleName() + "\n" + e.getMessage(),
                 request.getRequestURI()
         );
         return ResponseEntity.status(status).body(err);
