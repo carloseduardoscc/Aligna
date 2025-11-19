@@ -7,20 +7,14 @@ import br.com.carlos.projeto.application.dto.ProfessionalProfileDTO;
 import br.com.carlos.projeto.application.dto.ReserveDTO;
 import br.com.carlos.projeto.application.dto.ServiceDTO;
 import br.com.carlos.projeto.application.dto.UserDTO;
-import br.com.carlos.projeto.application.mapper.ProfessionalProfileMapper;
-import br.com.carlos.projeto.application.mapper.ReserveMapper;
-import br.com.carlos.projeto.application.mapper.ServiceMapper;
-import br.com.carlos.projeto.application.mapper.UserMapper;
+import br.com.carlos.projeto.application.mapper.Mapper;
 import br.com.carlos.projeto.domain.ProfessionalProfile;
 import br.com.carlos.projeto.domain.Reserve;
 import br.com.carlos.projeto.domain.Service;
 import br.com.carlos.projeto.domain.User;
-import br.com.carlos.projeto.domain.repository.ReserveRepository;
-import br.com.carlos.projeto.domain.repository.ServiceRepository;
-import br.com.carlos.projeto.domain.repository.UserRepository;
-import br.com.carlos.projeto.infra.persistence.entity.ReserveEntity;
-import br.com.carlos.projeto.infra.persistence.entity.ServiceEntity;
-import br.com.carlos.projeto.infra.persistence.entity.UserEntity;
+import br.com.carlos.projeto.infra.repository.ReserveRepository;
+import br.com.carlos.projeto.infra.repository.ServiceRepository;
+import br.com.carlos.projeto.infra.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
@@ -33,29 +27,30 @@ import java.util.stream.Collectors;
 public class MeService {
 
     AuthenticationService auth;
-    UserRepository<UserEntity> uRepo;
-    ServiceRepository<ServiceEntity> sRepo;
-    ReserveRepository<ReserveEntity> rRepo;
-    ProfessionalProfileMapper pMapper;
-    UserMapper uMapper;
-    ReserveMapper rMapper;
-    ServiceMapper sMapper;
+    UserRepository uRepo;
+    ServiceRepository sRepo;
+    ReserveRepository rRepo;
+    Mapper mapper;
 
     @Transactional
     public ReserveDTO requestReserve(RequestReserveCommand cmd) {
-        User user = auth.getCurrentAuthenticatedUser();
-        Service service = sMapper.fromEntity(sRepo.findById(cmd.service_id()));
+        User currentUser = auth.getCurrentAuthenticatedUser();
+        Service service = sRepo.findById(cmd.service_id())
+                .orElseThrow(() -> new IllegalArgumentException("Serviço não encontrado com o ID: " + cmd.service_id()));;
 
-        Reserve reserve = new Reserve(cmd.dateTime(), user, service);
+        Reserve reserve = new Reserve(cmd.dateTime(), currentUser, service);
+        currentUser.addReserve(reserve);
+        service.addReserve(reserve);
 
-        reserve = rMapper.fromEntity(rRepo.save(rMapper.toEntity(reserve)));
+        reserve = rRepo.save(reserve);
 
-        return rMapper.toDTO(reserve);
+        return mapper.toDTO(reserve);
+
     }
 
     @Transactional
     public UserDTO me() {
-        return uMapper.toDTO(auth.getCurrentAuthenticatedUser());
+        return mapper.toDTO(auth.getCurrentAuthenticatedUser());
     }
 
     @Transactional
@@ -65,11 +60,9 @@ public class MeService {
         user.setProfessionalProfile(profile);
         profile.setUser(user);
 
-        UserEntity userEntity = uMapper.toEntity(user);
-        userEntity = uRepo.save(userEntity);
-        user = uMapper.fromEntity(userEntity);
+        user = uRepo.save(user);
 
-        return pMapper.toDTO(user.getProfessionalProfile());
+        return mapper.toDTO(user.getProfessionalProfile());
     }
 
     @Transactional
@@ -91,7 +84,7 @@ public class MeService {
         profile.addService(service);
         service.setProfessionalProfile(profile);
 
-        ServiceEntity savedService = sRepo.save(sMapper.toEntity(service));
-        return sMapper.toDTO(sMapper.fromEntity(savedService));
+        Service savedService = sRepo.save(service);
+        return mapper.toDTO(savedService);
     }
 }

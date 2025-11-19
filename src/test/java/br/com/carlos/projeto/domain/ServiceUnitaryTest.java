@@ -19,14 +19,14 @@ public class ServiceUnitaryTest {
     ProfessionalProfile professionalProfile;
 
     @BeforeEach
-    void setUp() throws Exception{
+    void setUp() throws Exception {
         professionalProfile = new ProfessionalProfile("Descrição profissional test");
     }
 
     @Test
-    void deveCriarServicoSemErro(){
-        assertDoesNotThrow(()->{
-            new Service("Marcenaria", "Faço serviços de marcenaria de todos os tipos.", LocalTime.of(8,0), LocalTime.of(16,0), new HashSet<>(List.of(DayOfWeek.WEDNESDAY)), professionalProfile);
+    void deveCriarServicoSemErro() {
+        assertDoesNotThrow(() -> {
+            new Service("Marcenaria", "Faço serviços de marcenaria de todos os tipos.", LocalTime.of(8, 0), LocalTime.of(16, 0), new HashSet<>(List.of(DayOfWeek.WEDNESDAY)), professionalProfile);
         });
     }
 

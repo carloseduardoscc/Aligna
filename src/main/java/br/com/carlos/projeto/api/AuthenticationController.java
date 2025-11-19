@@ -10,7 +10,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
 
@@ -36,6 +39,6 @@ public class AuthenticationController {
     @PostMapping("/register")
     public ResponseEntity<UserDTO> registerUser(HttpServletRequest request, @RequestBody @Valid RegisterUserCommand cmd) {
         UserDTO dto = service.register(cmd);
-        return ResponseEntity.created(URI.create("/users/"+dto.id())).body(dto);
+        return ResponseEntity.created(URI.create("/users/" + dto.id())).body(dto);
     }
 }
