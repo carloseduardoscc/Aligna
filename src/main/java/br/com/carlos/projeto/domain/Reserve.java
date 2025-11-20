@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 @Entity(name = "reserve_tb")
@@ -87,6 +88,12 @@ public class Reserve {
         }
         if (this.service.getProfessionalProfile().getUser().equals(applicant)) {
             throw new DomainException("O solicitante não pode ser o mesmo que o prestador de serviço.");
+        }
+        if (this.service.getReserves().stream().anyMatch(
+                        r -> r.getApplicant().equals(applicant) &&
+                                List.of(ReserveStatus.PENDING, ReserveStatus.ACCEPTED).contains(r.status) &&
+                                r.getDateTime().isAfter(LocalDateTime.now()))) {
+            throw new DomainException("O solicitante já possui um agendamento para este serviço. Para realizar um novo agendamento, cancele o existente ou espere que a data agendada se cumpra.");
         }
         this.applicant = applicant;
     }
