@@ -6,10 +6,10 @@ import jakarta.validation.constraints.NotBlank;
 @Schema(description = "Comando para realizar o login do usuário.")
 public record LoginCommand(
 
-        @Schema(description = "Login do usuário.", example = "email@example.com")
+        @Schema(description = "Login do usuário.", examples = {"carlos@gmail.com", "paulo@gmail.com"})
         @NotBlank(message = "O login é obrigatório.")
         String login,
-        @Schema(description = "Senha do usuário.", example = "SenhaSegura123!")
+        @Schema(description = "Senha do usuário.", examples = {"123456789", "123456789"})
         @NotBlank(message = "A senha é obrigatória.")
         String password
 ) {
