@@ -21,7 +21,7 @@ import java.net.URI;
 
 @RestController
 @RequestMapping("/me")
-@Tag(name = "Ações do usuário autenticado")
+@Tag(name = "Casos de uso do usuário autenticado")
 public class MeController {
 
     MeService meService;
@@ -47,6 +47,8 @@ public class MeController {
         return ResponseEntity.created(URI.create("/reserves/" + response.id())).body(response);
     }
 
+    @Operation(summary = "Busca todas as reservas do usuário autenticado com paginação",
+            security = @SecurityRequirement(name = "bearerAuth"))
     @GetMapping("/reserves")
     public ResponseEntity<Page<ReserveDTO>> getReserves(@PageableDefault(size = 10, sort = "id", direction = Sort.Direction.ASC)
                                                               @ParameterObject
