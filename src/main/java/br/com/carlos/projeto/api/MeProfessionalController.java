@@ -25,7 +25,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/me/professional-profile")
-@Tag(name = "Ações do usuário autenticado")
+@Tag(name = "Casos de uso do perfil profissional do usuário autenticado")
 public class MeProfessionalController {
 
     MeProfessionalService meService;
@@ -51,12 +51,16 @@ public class MeProfessionalController {
         return ResponseEntity.created(URI.create("/services/" + response.id())).body(response);
     }
 
+    @Operation(summary = "Busca todos os serviços do perfil profissional do usuário autenticado",
+            security = @SecurityRequirement(name = "bearerAuth"))
     @GetMapping("/services")
     public ResponseEntity<List<ServiceDTO>> getServices() {
         List<ServiceDTO> services = meService.getServices();
         return ResponseEntity.ok(services);
     }
 
+    @Operation(summary = "Busca todas as reservas de um serviço específico do perfil profissional do usuário autenticado com paginação",
+            security = @SecurityRequirement(name = "bearerAuth"))
     @GetMapping("/services/{id}/reserves")
     public ResponseEntity<Page<ReserveDTO>> getReserves(@PathVariable Long id, @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.ASC)
     @ParameterObject
