@@ -41,7 +41,7 @@ public class TestDataLoader implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        if(activeProfile.equals("test")) {
+        if(activeProfile.equals("homolog")) {
             loadTestData();
         }
     }
