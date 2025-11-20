@@ -101,7 +101,7 @@ public class ServiceControllerIntegrationTest {
                         "availableDays":["MONDAY", "TUESDAY", "FRIDAY"]
                     }""";
 
-            mock.perform(post("/me/services")
+            mock.perform(post("/me/professional-profile/services")
                             .header("Authorization", "Bearer " + token)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(bodyService))
@@ -130,7 +130,7 @@ public class ServiceControllerIntegrationTest {
                         "availableDays":["WEDNESDAY", "THURSDAY"]
                     }""";
 
-            String registerServiceResponse = mock.perform(post("/me/services")
+            String registerServiceResponse = mock.perform(post("/me/professional-profile/services")
                             .header("Authorization", "Bearer " + token)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(bodyService))
