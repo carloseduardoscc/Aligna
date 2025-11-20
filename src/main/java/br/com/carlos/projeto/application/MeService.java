@@ -1,75 +1,54 @@
 package br.com.carlos.projeto.application;
 
-import br.com.carlos.projeto.application.command.RegisterProfessionalProfileCommand;
-import br.com.carlos.projeto.application.command.RegisterServiceCommand;
-import br.com.carlos.projeto.application.dto.ProfessionalProfileDTO;
-import br.com.carlos.projeto.application.dto.ServiceDTO;
+import br.com.carlos.projeto.application.command.RequestReserveCommand;
+import br.com.carlos.projeto.application.dto.ReserveDTO;
 import br.com.carlos.projeto.application.dto.UserDTO;
-import br.com.carlos.projeto.application.mapper.ProfessionalProfileMapper;
-import br.com.carlos.projeto.application.mapper.ServiceMapper;
-import br.com.carlos.projeto.application.mapper.UserMapper;
-import br.com.carlos.projeto.domain.ProfessionalProfile;
+import br.com.carlos.projeto.application.mapper.Mapper;
+import br.com.carlos.projeto.domain.Reserve;
 import br.com.carlos.projeto.domain.Service;
 import br.com.carlos.projeto.domain.User;
-import br.com.carlos.projeto.domain.repository.ServiceRepository;
-import br.com.carlos.projeto.domain.repository.UserRepository;
-import br.com.carlos.projeto.infra.persistence.entity.ServiceEntity;
-import br.com.carlos.projeto.infra.persistence.entity.UserEntity;
+import br.com.carlos.projeto.infra.repository.ReserveRepository;
+import br.com.carlos.projeto.infra.repository.ServiceRepository;
+import br.com.carlos.projeto.infra.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
+@AllArgsConstructor
 @org.springframework.stereotype.Service
 public class MeService {
 
     AuthenticationService auth;
-    UserRepository<UserEntity> userRepo;
-    ServiceRepository<ServiceEntity> serviceRepo;
-    ProfessionalProfileMapper pMapper;
-    UserMapper uMapper;
-    ServiceMapper sMapper;
+    UserRepository uRepo;
+    ServiceRepository sRepo;
+    ReserveRepository rRepo;
+    Mapper mapper;
 
-    public MeService(AuthenticationService auth, UserRepository<UserEntity> userRepo, ServiceRepository<ServiceEntity> serviceRepo, ProfessionalProfileMapper pMapper, UserMapper uMapper, ServiceMapper sMapper) {
-        this.auth = auth;
-        this.userRepo = userRepo;
-        this.serviceRepo = serviceRepo;
-        this.pMapper = pMapper;
-        this.uMapper = uMapper;
-        this.sMapper = sMapper;
+    @Transactional
+    public ReserveDTO requestReserve(RequestReserveCommand cmd) {
+        User currentUser = auth.getCurrentAuthenticatedUser();
+        Service service = sRepo.findById(cmd.service_id())
+                .orElseThrow(() -> new IllegalArgumentException("Serviço não encontrado com o ID: " + cmd.service_id()));;
+
+        Reserve reserve = new Reserve(cmd.dateTime(), currentUser, service);
+        currentUser.addReserve(reserve);
+        service.addReserve(reserve);
+
+        reserve = rRepo.save(reserve);
+
+        return mapper.toDTO(reserve);
+
+    }
+
+    @Transactional
+    public Page<ReserveDTO> getMyReserves(Pageable pageable) {
+        User currentUser = auth.getCurrentAuthenticatedUser();
+        return rRepo.findAllByApplicant_Id(currentUser.getId(), pageable).map(mapper::toDTO);
     }
 
     @Transactional
     public UserDTO me() {
-        return uMapper.toDTO(auth.getCurrentAuthenticatedUser());
-    }
-
-    @Transactional
-    public ProfessionalProfileDTO registerProfessionalProfile(RegisterProfessionalProfileCommand cmd) {
-        ProfessionalProfile profile = new ProfessionalProfile(cmd.description());
-        User user = auth.getCurrentAuthenticatedUser();
-        user.setProfessionalProfile(profile);
-        profile.setUser(user);
-
-        UserEntity userEntity = uMapper.toEntity(user);
-        userEntity = userRepo.save(userEntity);
-        user = uMapper.fromEntity(userEntity);
-
-        return pMapper.toDTO(user.getProfessionalProfile());
-    }
-
-    @Transactional
-    public ServiceDTO registerService(RegisterServiceCommand cmd) {
-        User user = auth.getCurrentAuthenticatedUser();
-        ProfessionalProfile profile = user.getProfessionalProfile();
-
-        if (profile == null) {
-            throw new IllegalStateException("Usuário não possui perfil profissional registrado.");
-        }
-
-        Service service = sMapper.fromRegisterServiceCommand(cmd);
-        profile.addService(service);
-        service.setProfessionalProfile(profile);
-
-        ServiceEntity savedService = serviceRepo.save(sMapper.toEntity(service));
-        return sMapper.toDTO(sMapper.fromEntity(savedService));
+        return mapper.toDTO(auth.getCurrentAuthenticatedUser());
     }
 }

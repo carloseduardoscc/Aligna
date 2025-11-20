@@ -11,7 +11,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -76,41 +78,131 @@ public class MeControllerIntegrationTest {
             token = token.replace("{\"token\":\"", "").replace("\"}", "");
         }
 
-        @Test
-        void dadoUsuarioSemPerfilProfissionalAoTentarCriarDeveRetornar201() throws Exception {
-            String body = """
+        @Nested
+        class EnvolvesProfessionalUser {
+
+            String existingProfessionalUserEmail = "usuarioprofissional@exemplo.com";
+            String existingProfessionalUserPassword = "123456789";
+
+            Long createdProfessionalUserId;
+            Long createdServiceId;
+
+            String professionalToken;
+
+            @BeforeEach
+            void setup() throws Exception {
+
+                /// registrando usuário profissional
+
+                String body = """
+                        {
+                            "email": "%s",
+                            "password": "%s",
+                            "name": "Usuário profissional teste"
+                        }
+                        """.formatted(existingProfessionalUserEmail, existingProfessionalUserPassword);
+
+                String registerResponse = mock.perform(post("/auth/register")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(body))
+                        .andExpect(status().isCreated())
+                        .andReturn()
+                        .getResponse()
+                        .getContentAsString();
+
+                createdProfessionalUserId = Long.parseLong(JsonPath.read(registerResponse, "$.id"));
+
+                /// logando usuário profissional
+
+                body = """
+                            {
+                                "login": "%s",
+                                "password": "%s"
+                            }
+                    """.formatted(existingProfessionalUserEmail, existingProfessionalUserPassword);
+
+
+                professionalToken = mock.perform(post("/auth/login")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(body))
+                        .andExpect(status().isOk())
+                        .andReturn()
+                        .getResponse()
+                        .getContentAsString();
+
+                professionalToken = professionalToken.replace("{\"token\":\"", "").replace("\"}", "");
+
+                /// registrando perfil profissional para o usuário profissional
+
+                body = """
                     {
                         "description":"Descrição teste."
                     }""";
 
-            mock.perform(post("/me/professional-profile")
-                            .header("Authorization", "Bearer " + token)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(body))
-                    .andExpect(status().isCreated())
-                    .andExpect(jsonPath("$.description").value("Descrição teste."));
-        }
+                mock.perform(post("/me/professional-profile")
+                                .header("Authorization", "Bearer " + professionalToken)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(body))
+                        .andExpect(status().isCreated())
+                        .andExpect(jsonPath("$.description").value("Descrição teste."));
 
-        @Test
-        void dadoUsuarioComPerfilProfissionalAoTentarCriarDeveRetornar400() throws Exception {
-            String body = """
-                    {
-                        "description":"Descrição teste."
+
+
+                /// registrando servico para o usuário profissional
+
+                String bodyService = """
+                                        {
+                        "title":"Jardinagem",
+                        "description":"Faço serviços de jardinagem de todos os tipos.",
+                        "availableFrom":"09:00",
+                        "availableUntil":"17:00",
+                        "availableDays":["WEDNESDAY", "THURSDAY"]
                     }""";
 
-            /// Cria o perfil profissional pela primeira vez
-            mock.perform(post("/me/professional-profile")
-                            .header("Authorization", "Bearer " + token)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(body))
-                    .andExpect(status().isCreated());
 
-            /// Tenta criar o perfil profissional novamente
-            mock.perform(post("/me/professional-profile")
-                            .header("Authorization", "Bearer " + token)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(body))
-                    .andExpect(status().isBadRequest());
+                String registerServiceResponse = mock.perform(post("/me/professional-profile/services")
+                                .header("Authorization", "Bearer " + professionalToken)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(bodyService))
+                        .andExpect(status().isCreated())
+                        .andReturn()
+                        .getResponse()
+                        .getContentAsString();
+
+                createdServiceId = Long.parseLong(JsonPath.read(registerServiceResponse, "$.id").toString());
+            }
+
+            @Test
+            void deveCriarReservaSemErro() throws Exception{
+                String body = """
+                        {
+                            "service_id" : "%s",
+                            "dateTime" : "%s"
+                        }""".formatted(createdServiceId, LocalDateTime.now().plusWeeks(1).with(DayOfWeek.WEDNESDAY).withHour(10).toString());
+
+                mock.perform(post("/me/reserves")
+                                .header("Authorization", "Bearer " + token)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(body))
+                        .andExpect(status().isCreated());
+            }
+
+            @Test
+            void deveLancarExcecaoAoCriarReservaComHorarioIndisponivel() throws Exception{
+                String body = """
+                        {
+                            "service_id" : "%s",
+                            "dateTime" : "%s"
+                        }""".formatted(createdServiceId, LocalDateTime.now().plusWeeks(1).with(DayOfWeek.TUESDAY).withHour(10).toString());
+
+                mock.perform(post("/me/reserves")
+                                .header("Authorization", "Bearer " + token)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(body))
+                        .andExpect(status().isBadRequest());
+            }
         }
+
+
     }
 }

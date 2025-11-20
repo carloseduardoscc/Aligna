@@ -11,7 +11,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -100,7 +101,7 @@ public class ServiceControllerIntegrationTest {
                         "availableDays":["MONDAY", "TUESDAY", "FRIDAY"]
                     }""";
 
-            mock.perform(post("/me/services")
+            mock.perform(post("/me/professional-profile/services")
                             .header("Authorization", "Bearer " + token)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(bodyService))
@@ -129,7 +130,7 @@ public class ServiceControllerIntegrationTest {
                         "availableDays":["WEDNESDAY", "THURSDAY"]
                     }""";
 
-            String registerServiceResponse = mock.perform(post("/me/services")
+            String registerServiceResponse = mock.perform(post("/me/professional-profile/services")
                             .header("Authorization", "Bearer " + token)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(bodyService))

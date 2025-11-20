@@ -1,27 +1,19 @@
 package br.com.carlos.projeto.application.mapper;
 
 import br.com.carlos.projeto.application.command.RegisterUserCommand;
-import br.com.carlos.projeto.application.dto.ProfessionalProfileDTO;
-import br.com.carlos.projeto.application.dto.PublicUserDTO;
-import br.com.carlos.projeto.application.dto.UserDTO;
+import br.com.carlos.projeto.application.dto.*;
 import br.com.carlos.projeto.domain.ProfessionalProfile;
+import br.com.carlos.projeto.domain.Reserve;
+import br.com.carlos.projeto.domain.Service;
 import br.com.carlos.projeto.domain.User;
-import br.com.carlos.projeto.infra.persistence.entity.ProfessionalProfileEntity;
-import br.com.carlos.projeto.infra.persistence.entity.UserEntity;
 import br.com.carlos.projeto.infra.security.AuthUser;
-import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring", uses = ProfessionalProfileMapper.class)
-public interface UserMapper {
+@org.mapstruct.Mapper(componentModel = "spring", uses = {})
+public interface Mapper {
     /// User Mappings
 
-    @Mapping(target = "professionalProfile.user", ignore = true)
-    public User fromEntity(UserEntity userEntity);
-
     public User fromRegisterUserCommand(RegisterUserCommand cmd);
-
-    public UserEntity toEntity(User user);
 
     @Mapping(source = "professionalProfile.id", target = "professionalProfileId")
     public UserDTO toDTO(User user);
@@ -33,5 +25,16 @@ public interface UserMapper {
 
     /// ProfessionalProfile Mappings
 
+    @Mapping(source = "user.id", target = "userId")
+    ProfessionalProfileDTO toDTO(ProfessionalProfile profile);
 
+
+    @Mapping(source = "professionalProfile.id", target = "professionalProfileId")
+    public ServiceDTO toDTO(Service service);
+
+    /// Reserve Mappings
+
+    @Mapping(source = "service.id", target = "service_id")
+    @Mapping(source = "applicant.id", target = "applicant_id")
+    public ReserveDTO toDTO(Reserve reserve);
 }

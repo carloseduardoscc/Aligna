@@ -1,6 +1,5 @@
 package br.com.carlos.projeto.api;
 
-import br.com.carlos.projeto.infra.security.exception.AuthenticationException;
 import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class SecurityErrorHandlerController {
 
     @RequestMapping("/security-error-handler")
-    public void handleError(HttpServletRequest request) throws Exception{
+    public void handleError(HttpServletRequest request) throws Exception {
         Throwable exception = (Throwable) request.getAttribute("javax.servlet.error.exception");
         throw (Exception) request.getAttribute("javax.servlet.error.exception");
     }

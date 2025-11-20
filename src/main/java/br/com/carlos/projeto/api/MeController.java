@@ -1,15 +1,19 @@
 package br.com.carlos.projeto.api;
 
 import br.com.carlos.projeto.application.MeService;
-import br.com.carlos.projeto.application.command.RegisterProfessionalProfileCommand;
-import br.com.carlos.projeto.application.command.RegisterServiceCommand;
-import br.com.carlos.projeto.application.dto.ProfessionalProfileDTO;
-import br.com.carlos.projeto.application.dto.ServiceDTO;
+import br.com.carlos.projeto.application.command.RequestReserveCommand;
+import br.com.carlos.projeto.application.dto.ReserveDTO;
 import br.com.carlos.projeto.application.dto.UserDTO;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +21,7 @@ import java.net.URI;
 
 @RestController
 @RequestMapping("/me")
-@Tag(name = "Ações do usuário autenticado")
+@Tag(name = "Casos de uso do usuário autenticado")
 public class MeController {
 
     MeService meService;
@@ -34,19 +38,23 @@ public class MeController {
         return ResponseEntity.ok(user);
     }
 
-    @Operation(summary = "Registra o perfil profissional do usuário autenticado",
+
+    @Operation(summary = "Solicita uma reserva de um serviço para o usuário autenticado",
             security = @SecurityRequirement(name = "bearerAuth"))
-    @PostMapping("/professional-profile")
-    public ResponseEntity<ProfessionalProfileDTO> registerProfessionalProfile(@RequestBody @Valid RegisterProfessionalProfileCommand cmd) {
-        ProfessionalProfileDTO response = meService.registerProfessionalProfile(cmd);
-        return ResponseEntity.created(URI.create("/professional-profiles/" + response.id())).body(response);
+    @PostMapping("/reserves")
+    public ResponseEntity<ReserveDTO> requestReserve(@RequestBody @Valid RequestReserveCommand cmd) {
+        ReserveDTO response = meService.requestReserve(cmd);
+        return ResponseEntity.created(URI.create("/reserves/" + response.id())).body(response);
     }
 
-    @Operation(summary = "Registra um serviço para o usuário autenticado",
+    @Operation(summary = "Busca todas as reservas do usuário autenticado com paginação",
             security = @SecurityRequirement(name = "bearerAuth"))
-    @PostMapping("/services")
-    public ResponseEntity<ServiceDTO> registerService(@RequestBody @Valid RegisterServiceCommand cmd) {
-        ServiceDTO response = meService.registerService(cmd);
-        return ResponseEntity.created(URI.create("/services/" + response.id())).body(response);
+    @GetMapping("/reserves")
+    public ResponseEntity<Page<ReserveDTO>> getReserves(@PageableDefault(size = 10, sort = "id", direction = Sort.Direction.ASC)
+                                                              @ParameterObject
+                                                              @Parameter(description = "Parâmetros de paginação e ordenação. Exemplo: ?page=0&size=10&sort=title,asc")
+                                                              Pageable pageable){
+        Page<ReserveDTO> response = meService.getMyReserves(pageable);
+        return ResponseEntity.ok(response);
     }
 }

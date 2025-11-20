@@ -11,7 +11,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -19,12 +18,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-public class UserControllerIntegrationTest {
-
+public class MeProfessionalControllerIntegrationTest {
     @Autowired
     MockMvc mock;
 
-    String existingUserName = "Usuário teste";
     String existingUserEmail = "usuarioteste@exemplo.com";
     String existingUserPassword = "123456789";
 
@@ -37,9 +34,9 @@ public class UserControllerIntegrationTest {
                 {
                     "email": "%s",
                     "password": "%s",
-                    "name": "%s"
+                    "name": "Usuário teste"
                 }
-                """.formatted(existingUserEmail, existingUserPassword, existingUserName);
+                """.formatted(existingUserEmail, existingUserPassword);
 
         String registerResponse = mock.perform(post("/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -79,23 +76,40 @@ public class UserControllerIntegrationTest {
         }
 
         @Test
-        void buscarUsuarioDeveRetornar200() throws Exception {
-            mock.perform(get("/users/" + createdUserId)
+        void dadoUsuarioSemPerfilProfissionalAoTentarCriarDeveRetornar201() throws Exception {
+            String body = """
+                    {
+                        "description":"Descrição teste."
+                    }""";
+
+            mock.perform(post("/me/professional-profile")
                             .header("Authorization", "Bearer " + token)
-                            .contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.name").value(existingUserName));
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(body))
+                    .andExpect(status().isCreated())
+                    .andExpect(jsonPath("$.description").value("Descrição teste."));
         }
 
         @Test
-        void buscarTodosUsuariosDeveRetornar200() throws Exception {
-            mock.perform(get("/users")
+        void dadoUsuarioComPerfilProfissionalAoTentarCriarDeveRetornar400() throws Exception {
+            String body = """
+                    {
+                        "description":"Descrição teste."
+                    }""";
+
+            /// Cria o perfil profissional pela primeira vez
+            mock.perform(post("/me/professional-profile")
                             .header("Authorization", "Bearer " + token)
-                            .contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.content").isArray());
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(body))
+                    .andExpect(status().isCreated());
+
+            /// Tenta criar o perfil profissional novamente
+            mock.perform(post("/me/professional-profile")
+                            .header("Authorization", "Bearer " + token)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(body))
+                    .andExpect(status().isBadRequest());
         }
     }
-
-
 }
