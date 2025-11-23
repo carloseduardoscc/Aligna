@@ -74,7 +74,7 @@ http://localhost:8080/swagger-ui/index.html
 | <kbd>POST /me/professional-profile</kbd>     | register a professional profile
 | <kbd>GET /me/professional-profile/services /kbd>     | get services registered by professional
 | <kbd>POST /me/professional-profile/services</kbd>     | register a service as professional pagination and sorting
-| <kbd>GET /professional-profile/services/{id}/reserves?page={page}&size={size}&sort={sorting_att},{asc,desc}</kbd>     | find reserves for a service with pagination and sorting
+| <kbd>GET /me/professional-profile/services/{id}/reserves?page={page}&size={size}&sort={sorting_att},{asc,desc}</kbd>     | find reserves for a service with pagination and sorting
 | <kbd>POST /auth/register</kbd>     | register a new user\
 | <kbd>POST /auth/login</kbd>     | authenticate a user
 | <kbd>GET /users?page={page}&size={size}&sort={sorting_att},{asc,desc}</kbd>     | find profiles with pagination and sorting
