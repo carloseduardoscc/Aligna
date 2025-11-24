@@ -5,9 +5,9 @@ import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
+@Access(AccessType.FIELD)
 @Entity(name = "reserve_tb")
 public class Reserve {
     @Id
@@ -15,10 +15,12 @@ public class Reserve {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
     LocalDateTime dateTime;
-    @Enumerated(EnumType.STRING)
-    ReserveStatus status;
 
-    //External
+    /// HAS
+    @OneToMany(mappedBy = "reserve", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ReservationStatusEntry> statusEntries = new ArrayList<>();
+
+    /// BELONGS TO
     @ManyToOne
     @JoinColumn(name = "applicant_id")
     User applicant;
@@ -26,26 +28,18 @@ public class Reserve {
     @JoinColumn(name = "service_id")
     Service service;
 
-    public Reserve() {
+    protected Reserve() {
     }
 
     public Reserve(LocalDateTime dateTime, User applicant, Service service) {
-        setStatus(ReserveStatus.PENDING);
+        this.statusEntries.add(new ReservationStatusEntry(ReserveStatus.PENDING, this));
         setService(service);
         setDateTime(dateTime);
         setApplicant(applicant);
     }
 
-    public Long getId() {
-        return id;
-    }
-
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public LocalDateTime getDateTime() {
-        return dateTime;
     }
 
     public void setDateTime(LocalDateTime dateTime) {
@@ -64,22 +58,14 @@ public class Reserve {
         this.dateTime = dateTime;
     }
 
-    public ReserveStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(ReserveStatus status) {
+    public void addStatus(ReserveStatus status) {
         if (status == null) {
             throw new DomainException("status da solicitação de agendamento não deve ser nulo");
         }
-        if (!(this.status == null) && !this.status.possibleTransitions().contains(status)) {
-            throw new DomainException("Transição de status da solicitação de agendamento inválida de " + this.status + " para " + status);
+        if (!this.getLastStatus().possibleTransitions().contains(status)) {
+            throw new DomainException("Transição de status da solicitação de agendamento inválida de " + this.getLastStatus() + " para " + status);
         }
-        this.status = status;
-    }
-
-    public User getApplicant() {
-        return applicant;
+        this.statusEntries.add(new ReservationStatusEntry(status, this));
     }
 
     public void setApplicant(User applicant) {
@@ -91,15 +77,11 @@ public class Reserve {
         }
         if (this.service.getReserves().stream().anyMatch(
                         r -> r.getApplicant().equals(applicant) &&
-                                List.of(ReserveStatus.PENDING, ReserveStatus.ACCEPTED).contains(r.status) &&
+                                List.of(ReserveStatus.PENDING, ReserveStatus.ACCEPTED).contains(r.getLastStatus()) &&
                                 r.getDateTime().isAfter(LocalDateTime.now()))) {
             throw new DomainException("O solicitante já possui um agendamento para este serviço. Para realizar um novo agendamento, cancele o existente ou espere que a data agendada se cumpra.");
         }
         this.applicant = applicant;
-    }
-
-    public Service getService() {
-        return service;
     }
 
     public void setService(Service service) {
@@ -107,6 +89,29 @@ public class Reserve {
             throw new DomainException("serviço não deve ser nulo");
         }
         this.service = service;
+    }
+
+    public ReserveStatus getLastStatus() {
+        if (statusEntries.isEmpty()) {
+            return null;
+        }
+        return statusEntries.get(statusEntries.size() - 1).getStatus();
+    }
+
+    public LocalDateTime getDateTime() {
+        return dateTime;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public User getApplicant() {
+        return applicant;
+    }
+
+    public Service getService() {
+        return service;
     }
 
     @Override
