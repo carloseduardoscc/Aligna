@@ -2,7 +2,10 @@ package br.com.carlos.projeto.api;
 
 import br.com.carlos.projeto.application.professional.command.RegisterProfessionalProfileCommand;
 import br.com.carlos.projeto.application.professional.useCase.RegisterProfessionalProfileUseCase;
+import br.com.carlos.projeto.application.reserve.useCase.AcceptReserveUseCase;
+import br.com.carlos.projeto.application.reserve.useCase.CancelReserveByProfessionalUseCase;
 import br.com.carlos.projeto.application.reserve.useCase.GetReservesByServiceIdUseCase;
+import br.com.carlos.projeto.application.reserve.useCase.RejectReserveUseCase;
 import br.com.carlos.projeto.application.service.command.RegisterServiceCommand;
 import br.com.carlos.projeto.application.professional.dto.ProfessionalProfileDTO;
 import br.com.carlos.projeto.application.reserve.dto.ReserveDTO;
@@ -36,6 +39,9 @@ public class MeProfessionalController {
     RegisterServiceUseCase registerServiceUseCase;
     GetMyServicesUseCase getMyServicesUseCase;
     GetReservesByServiceIdUseCase getReservesByServiceIdUseCase;
+    AcceptReserveUseCase acceptReserveUseCase;
+    RejectReserveUseCase rejectReserveUseCase;
+    CancelReserveByProfessionalUseCase cancelReserveByProfessionalUseCase;
 
     @Operation(summary = "Registra o perfil profissional do usuário autenticado",
             security = @SecurityRequirement(name = "bearerAuth"))
@@ -70,6 +76,29 @@ public class MeProfessionalController {
     Pageable pageable) {
         Page<ReserveDTO> reserves = getReservesByServiceIdUseCase.execute(id, pageable);
         return ResponseEntity.ok(reserves);
+    }
 
+    @Operation(summary = "Aceita uma reserva específica de um serviço do perfil profissional do usuário autenticado",
+            security = @SecurityRequirement(name = "bearerAuth"))
+    @PostMapping("/services/{serviceId}/reserves/{reserveId}/accept")
+    public ResponseEntity<ReserveDTO> acceptReserve(@PathVariable Long serviceId, @PathVariable Long reserveId) {
+        ReserveDTO response = acceptReserveUseCase.execute(serviceId, reserveId);
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "Rejeita uma reserva específica de um serviço do perfil profissional do usuário autenticado",
+            security = @SecurityRequirement(name = "bearerAuth"))
+    @PostMapping("/services/{serviceId}/reserves/{reserveId}/reject")
+    public ResponseEntity<ReserveDTO> rejectReserve(@PathVariable Long serviceId, @PathVariable Long reserveId) {
+        ReserveDTO response = rejectReserveUseCase.execute(serviceId, reserveId);
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "Cancela uma reserva feita pelo perfil profissional do usuário autenticado",
+            security = @SecurityRequirement(name = "bearerAuth"))
+    @PostMapping("/services/{serviceId}/reserves/{reserveId}/cancel")
+    public ResponseEntity<ReserveDTO> cancelReserve(@PathVariable Long serviceId, @PathVariable Long reserveId) {
+        ReserveDTO response = cancelReserveByProfessionalUseCase.execute(serviceId, reserveId);
+        return ResponseEntity.ok(response);
     }
 }

@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 @AllArgsConstructor
 @Service
-public class GetReservesByApplicant {
+public class GetReservesByApplicantUseCase {
     GetLoggedUserUseCase auth;
     ReserveRepository rRepo;
     ReserveMapper mapper;

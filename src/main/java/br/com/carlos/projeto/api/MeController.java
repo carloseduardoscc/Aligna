@@ -2,7 +2,8 @@ package br.com.carlos.projeto.api;
 
 import br.com.carlos.projeto.application.reserve.command.RequestReserveCommand;
 import br.com.carlos.projeto.application.reserve.dto.ReserveDTO;
-import br.com.carlos.projeto.application.reserve.useCase.GetReservesByApplicant;
+import br.com.carlos.projeto.application.reserve.useCase.CancelReserveByApplicantUseCase;
+import br.com.carlos.projeto.application.reserve.useCase.GetReservesByApplicantUseCase;
 import br.com.carlos.projeto.application.reserve.useCase.RequestReserveUseCase;
 import br.com.carlos.projeto.application.user.dto.UserDTO;
 import br.com.carlos.projeto.application.user.useCase.MeInfoUseCase;
@@ -30,7 +31,8 @@ public class MeController {
 
     MeInfoUseCase meInfoUseCase;
     RequestReserveUseCase requestReserveUseCase;
-    GetReservesByApplicant getReservesByApplicant;
+    GetReservesByApplicantUseCase getReservesByApplicantUseCase;
+    CancelReserveByApplicantUseCase cancelReserveByApplicantUseCase;
 
     @Operation(summary = "Traz informações sobre o usuário autenticado",
             security = @SecurityRequirement(name = "bearerAuth"))
@@ -55,7 +57,15 @@ public class MeController {
                                                               @ParameterObject
                                                               @Parameter(description = "Parâmetros de paginação e ordenação. Exemplo: ?page=0&size=10&sort=title,asc")
                                                               Pageable pageable){
-        Page<ReserveDTO> response = getReservesByApplicant.execute(pageable);
+        Page<ReserveDTO> response = getReservesByApplicantUseCase.execute(pageable);
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "Cancela uma reserva feita pelo usuário autenticado",
+            security = @SecurityRequirement(name = "bearerAuth"))
+    @PostMapping("/reserves/{reserveId}/cancel")
+    public ResponseEntity<ReserveDTO> cancelReserve(@PathVariable Long reserveId) {
+        ReserveDTO response = cancelReserveByApplicantUseCase.execute(reserveId);
         return ResponseEntity.ok(response);
     }
 }
