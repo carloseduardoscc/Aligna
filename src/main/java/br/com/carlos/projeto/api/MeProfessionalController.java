@@ -2,10 +2,8 @@ package br.com.carlos.projeto.api;
 
 import br.com.carlos.projeto.application.professional.command.RegisterProfessionalProfileCommand;
 import br.com.carlos.projeto.application.professional.useCase.RegisterProfessionalProfileUseCase;
-import br.com.carlos.projeto.application.reserve.useCase.AcceptReserveUseCase;
-import br.com.carlos.projeto.application.reserve.useCase.CancelReserveByProfessionalUseCase;
-import br.com.carlos.projeto.application.reserve.useCase.GetReservesByServiceIdUseCase;
-import br.com.carlos.projeto.application.reserve.useCase.RejectReserveUseCase;
+import br.com.carlos.projeto.application.reserve.dto.ReserveSummaryDTO;
+import br.com.carlos.projeto.application.reserve.useCase.*;
 import br.com.carlos.projeto.application.service.command.RegisterServiceCommand;
 import br.com.carlos.projeto.application.professional.dto.ProfessionalProfileDTO;
 import br.com.carlos.projeto.application.reserve.dto.ReserveDTO;
@@ -42,6 +40,7 @@ public class MeProfessionalController {
     AcceptReserveUseCase acceptReserveUseCase;
     RejectReserveUseCase rejectReserveUseCase;
     CancelReserveByProfessionalUseCase cancelReserveByProfessionalUseCase;
+    FindByIdUseCase findByIdUseCase;
 
     @Operation(summary = "Registra o perfil profissional do usuário autenticado",
             security = @SecurityRequirement(name = "bearerAuth"))
@@ -69,13 +68,21 @@ public class MeProfessionalController {
 
     @Operation(summary = "Busca todas as reservas de um serviço específico do perfil profissional do usuário autenticado com paginação",
             security = @SecurityRequirement(name = "bearerAuth"))
-    @GetMapping("/services/{id}/reserves")
-    public ResponseEntity<Page<ReserveDTO>> getReserves(@PathVariable Long id, @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.ASC)
+    @GetMapping("/services/{serviceId}/reserves")
+    public ResponseEntity<Page<ReserveSummaryDTO>> getReserves(@PathVariable Long serviceId, @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.ASC)
     @ParameterObject
     @Parameter(description = "Parâmetros de paginação e ordenação. Exemplo: ?page=0&size=10&sort=title,asc")
     Pageable pageable) {
-        Page<ReserveDTO> reserves = getReservesByServiceIdUseCase.execute(id, pageable);
+        Page<ReserveSummaryDTO> reserves = getReservesByServiceIdUseCase.execute(serviceId, pageable);
         return ResponseEntity.ok(reserves);
+    }
+
+    @Operation(summary = "Busca uma reserva pelo ID para o usuário autenticado",
+            security = @SecurityRequirement(name = "bearerAuth"))
+    @GetMapping("/services/{serviceId}/reserves/{reserveId}")
+    public ResponseEntity<ReserveDTO> findReserveById(@PathVariable Long serviceId, @PathVariable Long reserveId) {
+        ReserveDTO response = findByIdUseCase.executeAsProfessional(serviceId, reserveId);
+        return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "Aceita uma reserva específica de um serviço do perfil profissional do usuário autenticado",

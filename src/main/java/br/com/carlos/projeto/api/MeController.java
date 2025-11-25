@@ -2,7 +2,9 @@ package br.com.carlos.projeto.api;
 
 import br.com.carlos.projeto.application.reserve.command.RequestReserveCommand;
 import br.com.carlos.projeto.application.reserve.dto.ReserveDTO;
+import br.com.carlos.projeto.application.reserve.dto.ReserveSummaryDTO;
 import br.com.carlos.projeto.application.reserve.useCase.CancelReserveByApplicantUseCase;
+import br.com.carlos.projeto.application.reserve.useCase.FindByIdUseCase;
 import br.com.carlos.projeto.application.reserve.useCase.GetReservesByApplicantUseCase;
 import br.com.carlos.projeto.application.reserve.useCase.RequestReserveUseCase;
 import br.com.carlos.projeto.application.user.dto.UserDTO;
@@ -33,6 +35,7 @@ public class MeController {
     RequestReserveUseCase requestReserveUseCase;
     GetReservesByApplicantUseCase getReservesByApplicantUseCase;
     CancelReserveByApplicantUseCase cancelReserveByApplicantUseCase;
+    FindByIdUseCase findByIdUseCase;
 
     @Operation(summary = "Traz informações sobre o usuário autenticado",
             security = @SecurityRequirement(name = "bearerAuth"))
@@ -53,11 +56,19 @@ public class MeController {
     @Operation(summary = "Busca todas as reservas do usuário autenticado com paginação",
             security = @SecurityRequirement(name = "bearerAuth"))
     @GetMapping("/reserves")
-    public ResponseEntity<Page<ReserveDTO>> getReserves(@PageableDefault(size = 10, sort = "id", direction = Sort.Direction.ASC)
+    public ResponseEntity<Page<ReserveSummaryDTO>> getReserves(@PageableDefault(size = 10, sort = "id", direction = Sort.Direction.ASC)
                                                               @ParameterObject
                                                               @Parameter(description = "Parâmetros de paginação e ordenação. Exemplo: ?page=0&size=10&sort=title,asc")
                                                               Pageable pageable){
-        Page<ReserveDTO> response = getReservesByApplicantUseCase.execute(pageable);
+        Page<ReserveSummaryDTO> response = getReservesByApplicantUseCase.execute(pageable);
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "Busca uma reserva pelo ID para o usuário autenticado",
+            security = @SecurityRequirement(name = "bearerAuth"))
+    @GetMapping("/reserves/{reserveId}")
+    public ResponseEntity<ReserveDTO> findReserveById(@PathVariable Long reserveId) {
+        ReserveDTO response = findByIdUseCase.executeAsApplicant(reserveId);
         return ResponseEntity.ok(response);
     }
 

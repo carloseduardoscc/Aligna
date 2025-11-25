@@ -2,6 +2,7 @@ package br.com.carlos.projeto.application.reserve.mapper;
 
 import br.com.carlos.projeto.application.reserve.dto.ReservationStatusEntryDTO;
 import br.com.carlos.projeto.application.reserve.dto.ReserveDTO;
+import br.com.carlos.projeto.application.reserve.dto.ReserveSummaryDTO;
 import br.com.carlos.projeto.domain.ReservationStatusEntry;
 import br.com.carlos.projeto.domain.Reserve;
 import org.mapstruct.Mapping;
@@ -16,4 +17,5 @@ public interface ReserveMapper {
     @Mapping(source = "applicant.id", target = "applicant_id")
     public ReserveDTO toDTO(Reserve reserve);
     public ReservationStatusEntryDTO toDTO(ReservationStatusEntry entry);
+    public ReserveSummaryDTO toSummaryDTO(Reserve reserves);
 }

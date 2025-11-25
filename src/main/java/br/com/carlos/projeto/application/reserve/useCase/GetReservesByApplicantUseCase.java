@@ -2,6 +2,7 @@ package br.com.carlos.projeto.application.reserve.useCase;
 
 import br.com.carlos.projeto.application.authentication.useCase.GetLoggedUserUseCase;
 import br.com.carlos.projeto.application.reserve.dto.ReserveDTO;
+import br.com.carlos.projeto.application.reserve.dto.ReserveSummaryDTO;
 import br.com.carlos.projeto.application.reserve.mapper.ReserveMapper;
 import br.com.carlos.projeto.domain.User;
 import br.com.carlos.projeto.infra.repository.ReserveRepository;
@@ -19,8 +20,8 @@ public class GetReservesByApplicantUseCase {
     ReserveMapper mapper;
 
     @Transactional
-    public Page<ReserveDTO> execute(Pageable pageable) {
+    public Page<ReserveSummaryDTO> execute(Pageable pageable) {
         User currentUser = auth.execute();
-        return rRepo.findAllByApplicant_Id(currentUser.getId(), pageable).map(mapper::toDTO);
+        return rRepo.findAllByApplicant_Id(currentUser.getId(), pageable).map(mapper::toSummaryDTO);
     }
 }
