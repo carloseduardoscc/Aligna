@@ -14,7 +14,9 @@ public class Reserve {
     @EqualsAndHashCode.Include
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
-    LocalDateTime dateTime;
+    LocalDateTime scheduledTo;
+    @Enumerated(EnumType.STRING)
+    CancellationSource cancellationSource;
 
     /// HAS
     @OneToMany(mappedBy = "reserve", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -31,34 +33,60 @@ public class Reserve {
     protected Reserve() {
     }
 
-    public Reserve(LocalDateTime dateTime, User applicant, Service service) {
+    public Reserve(LocalDateTime scheduledTo, User applicant, Service service) {
         this.statusEntries.add(new ReservationStatusEntry(ReserveStatus.PENDING, this));
         setService(service);
-        setDateTime(dateTime);
+        setScheduledTo(scheduledTo);
         setApplicant(applicant);
+    }
+
+    public void accept(){
+        addStatus(ReserveStatus.ACCEPTED);
+    }
+
+    public void reject(){
+        addStatus(ReserveStatus.REJECTED);
+    }
+
+    public void cancel(CancellationSource source){
+        if (source == null) {
+            throw new DomainException("fonte de cancelamento não deve ser nula");
+        }
+        if (this.getLastStatus() == ReserveStatus.CANCELLED) {
+            throw new DomainException("solicitação de agendamento já está cancelada");
+        }
+        if (source.equals(CancellationSource.PROFESSIONAL) && this.getLastStatus() == ReserveStatus.PENDING) {
+            throw new DomainException("profissional não pode cancelar uma solicitação de agendamento que ainda não foi aceita ou rejeitada");
+        }
+        setCancellationSource(source);
+        addStatus(ReserveStatus.CANCELLED);
+    }
+
+    public void setCancellationSource(CancellationSource cancellationSource) {
+        this.cancellationSource = cancellationSource;
     }
 
     public void setId(Long id) {
         this.id = id;
     }
 
-    public void setDateTime(LocalDateTime dateTime) {
-        if (dateTime == null) {
+    public void setScheduledTo(LocalDateTime scheduledAt) {
+        if (scheduledAt == null) {
             throw new DomainException("horário de agendamento não deve ser nulo");
         }
-        if (dateTime.isBefore(LocalDateTime.now())) {
+        if (scheduledAt.isBefore(LocalDateTime.now())) {
             throw new DomainException("horário de agendamento não deve ser no passado");
         }
-        if (dateTime.toLocalTime().isBefore(service.getAvailableFrom()) || dateTime.toLocalTime().isAfter(service.getAvailableUntil())) {
+        if (scheduledAt.toLocalTime().isBefore(service.getAvailableFrom()) || scheduledAt.toLocalTime().isAfter(service.getAvailableUntil())) {
             throw new DomainException("horário de agendamento deve estar dentro do horário de atendimento do serviço: " + service.getAvailableFrom() + " até ás " + service.getAvailableUntil());
         }
-        if (!service.getAvailableDays().contains(dateTime.getDayOfWeek())) {
+        if (!service.getAvailableDays().contains(scheduledAt.getDayOfWeek())) {
             throw new DomainException("horário de agendamento deve estar dentro dos dias disponíveis do serviço: " + service.getAvailableDays());
         }
-        this.dateTime = dateTime;
+        this.scheduledTo = scheduledAt;
     }
 
-    public void addStatus(ReserveStatus status) {
+    private void addStatus(ReserveStatus status) {
         if (status == null) {
             throw new DomainException("status da solicitação de agendamento não deve ser nulo");
         }
@@ -78,7 +106,7 @@ public class Reserve {
         if (this.service.getReserves().stream().anyMatch(
                         r -> r.getApplicant().equals(applicant) &&
                                 List.of(ReserveStatus.PENDING, ReserveStatus.ACCEPTED).contains(r.getLastStatus()) &&
-                                r.getDateTime().isAfter(LocalDateTime.now()))) {
+                                r.getScheduledTo().isAfter(LocalDateTime.now()))) {
             throw new DomainException("O solicitante já possui um agendamento para este serviço. Para realizar um novo agendamento, cancele o existente ou espere que a data agendada se cumpra.");
         }
         this.applicant = applicant;
@@ -98,8 +126,19 @@ public class Reserve {
         return statusEntries.get(statusEntries.size() - 1).getStatus();
     }
 
-    public LocalDateTime getDateTime() {
-        return dateTime;
+    public LocalDateTime getLastUpdate() {
+        if (statusEntries.isEmpty()) {
+            return null;
+        }
+        return statusEntries.get(statusEntries.size() - 1).getTimeStamp();
+    }
+
+    public CancellationSource getCancellationSource() {
+        return cancellationSource;
+    }
+
+    public LocalDateTime getScheduledTo() {
+        return scheduledTo;
     }
 
     public Long getId() {
@@ -112,6 +151,10 @@ public class Reserve {
 
     public Service getService() {
         return service;
+    }
+
+    public List<ReservationStatusEntry> getStatusEntries() {
+        return statusEntries;
     }
 
     @Override
