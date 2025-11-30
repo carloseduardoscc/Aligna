@@ -2,7 +2,6 @@ package br.com.carlos.projeto.domain;
 
 import br.com.carlos.projeto.domain.exceptions.DomainException;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 
 import java.util.HashSet;

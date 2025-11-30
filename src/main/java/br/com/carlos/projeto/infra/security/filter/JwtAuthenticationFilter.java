@@ -1,6 +1,6 @@
 package br.com.carlos.projeto.infra.security.filter;
 
-import br.com.carlos.projeto.application.AuthenticationService;
+import br.com.carlos.projeto.application.authentication.useCase.LoadUserByUserNameUseCase;
 import br.com.carlos.projeto.infra.security.AuthUser;
 import br.com.carlos.projeto.infra.security.TokenService;
 import jakarta.servlet.FilterChain;
@@ -20,11 +20,11 @@ import java.io.IOException;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     TokenService tokenService;
-    AuthenticationService authService;
+    LoadUserByUserNameUseCase loadUserByUserNameUseCase;
 
-    public JwtAuthenticationFilter(TokenService tokenService, @Lazy AuthenticationService authService) {
+    public JwtAuthenticationFilter(TokenService tokenService, @Lazy LoadUserByUserNameUseCase authService) {
         this.tokenService = tokenService;
-        this.authService = authService;
+        this.loadUserByUserNameUseCase = authService;
     }
 
     @Override
@@ -33,7 +33,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String token = this.recoverToken(request);
             if (token != null) {
                 String email = tokenService.validateToken(token);
-                AuthUser user = (AuthUser) authService.loadUserByUsername(email);
+                AuthUser user = (AuthUser) loadUserByUserNameUseCase.execute(email);
 
                 // Validação
                 if (user == null) {

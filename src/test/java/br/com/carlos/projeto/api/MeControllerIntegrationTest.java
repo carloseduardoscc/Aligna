@@ -115,11 +115,11 @@ public class MeControllerIntegrationTest {
                 /// logando usuário profissional
 
                 body = """
-                            {
-                                "login": "%s",
-                                "password": "%s"
-                            }
-                    """.formatted(existingProfessionalUserEmail, existingProfessionalUserPassword);
+                                {
+                                    "login": "%s",
+                                    "password": "%s"
+                                }
+                        """.formatted(existingProfessionalUserEmail, existingProfessionalUserPassword);
 
 
                 professionalToken = mock.perform(post("/auth/login")
@@ -135,9 +135,9 @@ public class MeControllerIntegrationTest {
                 /// registrando perfil profissional para o usuário profissional
 
                 body = """
-                    {
-                        "description":"Descrição teste."
-                    }""";
+                        {
+                            "description":"Descrição teste."
+                        }""";
 
                 mock.perform(post("/me/professional-profile")
                                 .header("Authorization", "Bearer " + professionalToken)
@@ -147,17 +147,16 @@ public class MeControllerIntegrationTest {
                         .andExpect(jsonPath("$.description").value("Descrição teste."));
 
 
-
                 /// registrando servico para o usuário profissional
 
                 String bodyService = """
-                                        {
-                        "title":"Jardinagem",
-                        "description":"Faço serviços de jardinagem de todos os tipos.",
-                        "availableFrom":"09:00",
-                        "availableUntil":"17:00",
-                        "availableDays":["WEDNESDAY", "THURSDAY"]
-                    }""";
+                                            {
+                            "title":"Jardinagem",
+                            "description":"Faço serviços de jardinagem de todos os tipos.",
+                            "availableFrom":"09:00",
+                            "availableUntil":"17:00",
+                            "availableDays":["WEDNESDAY", "THURSDAY"]
+                        }""";
 
 
                 String registerServiceResponse = mock.perform(post("/me/professional-profile/services")
@@ -173,11 +172,11 @@ public class MeControllerIntegrationTest {
             }
 
             @Test
-            void deveCriarReservaSemErro() throws Exception{
+            void deveCriarReservaSemErro() throws Exception {
                 String body = """
                         {
                             "service_id" : "%s",
-                            "dateTime" : "%s"
+                            "scheduledTo" : "%s"
                         }""".formatted(createdServiceId, LocalDateTime.now().plusWeeks(1).with(DayOfWeek.WEDNESDAY).withHour(10).toString());
 
                 mock.perform(post("/me/reserves")
@@ -188,11 +187,11 @@ public class MeControllerIntegrationTest {
             }
 
             @Test
-            void deveLancarExcecaoAoCriarReservaComHorarioIndisponivel() throws Exception{
+            void deveLancarExcecaoAoCriarReservaComHorarioIndisponivel() throws Exception {
                 String body = """
                         {
                             "service_id" : "%s",
-                            "dateTime" : "%s"
+                            "scheduledAt" : "%s"
                         }""".formatted(createdServiceId, LocalDateTime.now().plusWeeks(1).with(DayOfWeek.TUESDAY).withHour(10).toString());
 
                 mock.perform(post("/me/reserves")
