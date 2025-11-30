@@ -18,6 +18,6 @@ public class FindUserByIdUseCase {
 
     @Transactional
     public PublicUserDTO execute(Long id) {
-        return mapper.toPublicDTO(repo.findById(id).orElseThrow(()-> new NoSuchElementException("Usuário com id: " + id + " não encontrado.")));
+        return mapper.toPublicDTO(repo.findById(id).orElseThrow(() -> new NoSuchElementException("Usuário com id: " + id + " não encontrado.")));
     }
 }

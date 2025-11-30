@@ -213,11 +213,11 @@ public class MeProfessionalControllerIntegrationTest {
 
                     /// applicant user login
                     body = """
-                            {
-                                "login": "%s",
-                                "password": "%s"
-                            }
-                    """.formatted(existingApplicantEmail, existingApplicantPassword);
+                                    {
+                                        "login": "%s",
+                                        "password": "%s"
+                                    }
+                            """.formatted(existingApplicantEmail, existingApplicantPassword);
 
 
                     applicantToken = mock.perform(post("/auth/login")
@@ -247,19 +247,19 @@ public class MeProfessionalControllerIntegrationTest {
                 int performStatusTransition(Long reserveId, String status) throws Exception {
                     switch (status) {
                         case "ACCEPTED" -> {
-                            return mock.perform(post("/me/professional-profile/services/{serviceId}/reserves/{reserveId}/accept",createdServiceId, reserveId)
+                            return mock.perform(post("/me/professional-profile/services/{serviceId}/reserves/{reserveId}/accept", createdServiceId, reserveId)
                                             .contentType(MediaType.APPLICATION_JSON)
                                             .header("Authorization", "Bearer " + professionalToken))
                                     .andReturn().getResponse().getStatus();
                         }
                         case "REJECTED" -> {
-                            return mock.perform(post("/me/professional-profile/services/{serviceId}/reserves/{reserveId}/reject",createdServiceId, reserveId)
+                            return mock.perform(post("/me/professional-profile/services/{serviceId}/reserves/{reserveId}/reject", createdServiceId, reserveId)
                                             .contentType(MediaType.APPLICATION_JSON)
                                             .header("Authorization", "Bearer " + professionalToken))
                                     .andReturn().getResponse().getStatus();
                         }
                         case "CANCELED" -> {
-                            return mock.perform(post("/me/reserves/{reserveId}/cancel",reserveId)
+                            return mock.perform(post("/me/reserves/{reserveId}/cancel", reserveId)
                                             .contentType(MediaType.APPLICATION_JSON)
                                             .header("Authorization", "Bearer " + applicantToken))
                                     .andReturn().getResponse().getStatus();

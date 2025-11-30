@@ -6,7 +6,6 @@ import br.com.carlos.projeto.application.authentication.dto.LoginResponseDTO;
 import br.com.carlos.projeto.application.authentication.dto.RegisterResponseDTO;
 import br.com.carlos.projeto.application.authentication.useCase.LoginUseCase;
 import br.com.carlos.projeto.application.authentication.useCase.RegisterUserCase;
-import br.com.carlos.projeto.application.user.dto.UserDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;

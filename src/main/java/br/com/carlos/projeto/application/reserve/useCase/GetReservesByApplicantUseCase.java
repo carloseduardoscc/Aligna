@@ -1,7 +1,6 @@
 package br.com.carlos.projeto.application.reserve.useCase;
 
 import br.com.carlos.projeto.application.authentication.useCase.GetLoggedUserUseCase;
-import br.com.carlos.projeto.application.reserve.dto.ReserveDTO;
 import br.com.carlos.projeto.application.reserve.dto.ReserveSummaryDTO;
 import br.com.carlos.projeto.application.reserve.mapper.ReserveMapper;
 import br.com.carlos.projeto.domain.User;

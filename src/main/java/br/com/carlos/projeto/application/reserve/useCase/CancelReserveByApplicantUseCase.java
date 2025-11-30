@@ -4,9 +4,7 @@ import br.com.carlos.projeto.application.reserve.dto.ReserveDTO;
 import br.com.carlos.projeto.application.reserve.mapper.ReserveMapper;
 import br.com.carlos.projeto.domain.CancellationSource;
 import br.com.carlos.projeto.domain.Reserve;
-import br.com.carlos.projeto.domain.Service;
 import br.com.carlos.projeto.infra.repository.ReserveRepository;
-import br.com.carlos.projeto.infra.repository.ServiceRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 

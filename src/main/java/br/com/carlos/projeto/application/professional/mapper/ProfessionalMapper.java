@@ -10,6 +10,7 @@ import org.mapstruct.Mapping;
 public interface ProfessionalMapper {
     @Mapping(source = "user.id", target = "userId")
     ProfessionalProfileDTO toDTO(ProfessionalProfile profile);
+
     @Mapping(source = "professionalProfile.id", target = "professionalProfileId")
     public ServiceDTO toDTO(Service service);
 }

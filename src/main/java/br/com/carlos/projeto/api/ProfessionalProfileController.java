@@ -24,8 +24,8 @@ import org.springframework.web.bind.annotation.RestController;
 @AllArgsConstructor
 public class ProfessionalProfileController {
 
-   FindProfessionalByIdUseCase findProfessionalByIdUseCase;
-   FindAllProfessionalUseCase findAllProfessionalUseCase;
+    FindProfessionalByIdUseCase findProfessionalByIdUseCase;
+    FindAllProfessionalUseCase findAllProfessionalUseCase;
 
     @Operation(summary = "Busca um professional profile pelo ID")
     @GetMapping("/{id}")

@@ -5,13 +5,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 public class ReserveUnitaryTest {
@@ -75,7 +75,7 @@ public class ReserveUnitaryTest {
     }
 
     @Test
-    void deveLancarErroAoTentarAgendarMaisUmaReserva(){
+    void deveLancarErroAoTentarAgendarMaisUmaReserva() {
         Reserve reservaExistente = new Reserve(java.time.LocalDateTime.now().plusWeeks(1).with(DayOfWeek.MONDAY).withHour(9).withMinute(0), applicant, service1);
         service1.addReserve(reservaExistente);
 
@@ -93,24 +93,24 @@ public class ReserveUnitaryTest {
 
     @ParameterizedTest
     @CsvFileSource(resources = "/reserve-status-transitions.csv", numLinesToSkip = 1)
-    void shouldValidateStatusTransitions(String initialState, String newState, boolean expectedValid){
+    void shouldValidateStatusTransitions(String initialState, String newState, boolean expectedValid) {
         Reserve reserve = new Reserve(java.time.LocalDateTime.now().plusWeeks(1).with(DayOfWeek.MONDAY).withHour(9).withMinute(0), applicant, service1);
 
         applyStatusTransition(reserve, initialState);
 
-        if(expectedValid){
-            assertDoesNotThrow(()->{
+        if (expectedValid) {
+            assertDoesNotThrow(() -> {
                 applyStatusTransition(reserve, newState);
             });
         } else {
-            assertThrows(DomainException.class, ()->{
+            assertThrows(DomainException.class, () -> {
                 applyStatusTransition(reserve, newState);
             });
         }
     }
 
     void applyStatusTransition(Reserve reserve, String newState) {
-        switch(newState){
+        switch (newState) {
             case "ACCEPTED":
                 reserve.accept();
                 break;

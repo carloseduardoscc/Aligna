@@ -22,25 +22,25 @@ public class FindByIdUseCase {
     @Transactional
     public ReserveDTO executeAsApplicant(Long id) {
         User user = auth.execute();
-        Reserve reserve =  rRepo.findById(id).orElseThrow(()->new NoSuchElementException("Reserva não encontrada"));
-        if(!reserve.getApplicant().getId().equals(user.getId())) {
+        Reserve reserve = rRepo.findById(id).orElseThrow(() -> new NoSuchElementException("Reserva não encontrada"));
+        if (!reserve.getApplicant().getId().equals(user.getId())) {
             throw new NoSuchElementException("Reserva não encontrada para o usuário autenticado");
         }
         return mapper.toDTO(reserve);
     }
 
     @Transactional
-    public ReserveDTO executeAsProfessional(Long serviceID, Long reserveId){
+    public ReserveDTO executeAsProfessional(Long serviceID, Long reserveId) {
         User user = auth.execute();
 
-        Reserve reserve = rRepo.findById(reserveId).orElseThrow(()->new NoSuchElementException("Reserva não encontrada"));
-        if(!reserve.getService().getProfessionalProfile().getUser().getId().equals(user.getId())) {
+        Reserve reserve = rRepo.findById(reserveId).orElseThrow(() -> new NoSuchElementException("Reserva não encontrada"));
+        if (!reserve.getService().getProfessionalProfile().getUser().getId().equals(user.getId())) {
             throw new NoSuchElementException("Reserva não encontrada para o usuário autenticado");
         }
-        if(!reserve.getService().getId().equals(serviceID)) {
+        if (!reserve.getService().getId().equals(serviceID)) {
             throw new NoSuchElementException("Reserva não encontrada para o serviço informado");
         }
 
-        return  mapper.toDTO(reserve);
+        return mapper.toDTO(reserve);
     }
 }

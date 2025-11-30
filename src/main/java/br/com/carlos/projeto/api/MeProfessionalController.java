@@ -1,12 +1,12 @@
 package br.com.carlos.projeto.api;
 
 import br.com.carlos.projeto.application.professional.command.RegisterProfessionalProfileCommand;
+import br.com.carlos.projeto.application.professional.dto.ProfessionalProfileDTO;
 import br.com.carlos.projeto.application.professional.useCase.RegisterProfessionalProfileUseCase;
+import br.com.carlos.projeto.application.reserve.dto.ReserveDTO;
 import br.com.carlos.projeto.application.reserve.dto.ReserveSummaryDTO;
 import br.com.carlos.projeto.application.reserve.useCase.*;
 import br.com.carlos.projeto.application.service.command.RegisterServiceCommand;
-import br.com.carlos.projeto.application.professional.dto.ProfessionalProfileDTO;
-import br.com.carlos.projeto.application.reserve.dto.ReserveDTO;
 import br.com.carlos.projeto.application.service.dto.ServiceDTO;
 import br.com.carlos.projeto.application.service.useCase.GetMyServicesUseCase;
 import br.com.carlos.projeto.application.service.useCase.RegisterServiceUseCase;

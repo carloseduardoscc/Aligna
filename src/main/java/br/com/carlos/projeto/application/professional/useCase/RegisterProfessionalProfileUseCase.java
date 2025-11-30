@@ -17,6 +17,7 @@ public class RegisterProfessionalProfileUseCase {
     GetLoggedUserUseCase auth;
     UserRepository uRepo;
     ProfessionalMapper mapper;
+
     @Transactional
     public ProfessionalProfileDTO execute(RegisterProfessionalProfileCommand cmd) {
         ProfessionalProfile profile = new ProfessionalProfile(cmd.description());

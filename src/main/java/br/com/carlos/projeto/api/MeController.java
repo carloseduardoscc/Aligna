@@ -57,9 +57,9 @@ public class MeController {
             security = @SecurityRequirement(name = "bearerAuth"))
     @GetMapping("/reserves")
     public ResponseEntity<Page<ReserveSummaryDTO>> getReserves(@PageableDefault(size = 10, sort = "id", direction = Sort.Direction.ASC)
-                                                              @ParameterObject
-                                                              @Parameter(description = "Parâmetros de paginação e ordenação. Exemplo: ?page=0&size=10&sort=title,asc")
-                                                              Pageable pageable){
+                                                               @ParameterObject
+                                                               @Parameter(description = "Parâmetros de paginação e ordenação. Exemplo: ?page=0&size=10&sort=title,asc")
+                                                               Pageable pageable) {
         Page<ReserveSummaryDTO> response = getReservesByApplicantUseCase.execute(pageable);
         return ResponseEntity.ok(response);
     }

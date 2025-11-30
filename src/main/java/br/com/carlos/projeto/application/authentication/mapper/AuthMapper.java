@@ -8,6 +8,8 @@ import br.com.carlos.projeto.infra.security.AuthUser;
 @org.mapstruct.Mapper(componentModel = "spring", uses = {})
 public interface AuthMapper {
     public User fromRegisterUserCommand(RegisterUserCommand cmd);
+
     public AuthUser toAuth(User user);
+
     public RegisterResponseDTO toDTO(User user);
 }

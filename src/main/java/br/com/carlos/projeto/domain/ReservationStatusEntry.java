@@ -29,26 +29,12 @@ public class ReservationStatusEntry {
         this.reserve = reserve;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    private void setStatus(ReserveStatus status) {
-        if (status == null) {
-            throw new IllegalArgumentException("Status cannot be null");
-        }
-        this.status = status;
-    }
-
-    private void setReserve(Reserve reserve) {
-        if (reserve == null) {
-            throw new IllegalArgumentException("Reserve cannot be null");
-        }
-        this.reserve = reserve;
-    }
-
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public LocalDateTime getTimeStamp() {
@@ -59,8 +45,22 @@ public class ReservationStatusEntry {
         return status;
     }
 
+    private void setStatus(ReserveStatus status) {
+        if (status == null) {
+            throw new IllegalArgumentException("Status cannot be null");
+        }
+        this.status = status;
+    }
+
     public Reserve getReserve() {
         return reserve;
+    }
+
+    private void setReserve(Reserve reserve) {
+        if (reserve == null) {
+            throw new IllegalArgumentException("Reserve cannot be null");
+        }
+        this.reserve = reserve;
     }
 
     @Override

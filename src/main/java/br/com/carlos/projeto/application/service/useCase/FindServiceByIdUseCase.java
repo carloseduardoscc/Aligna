@@ -18,6 +18,6 @@ public class FindServiceByIdUseCase {
 
     @Transactional
     public ServiceDTO execute(Long id) {
-        return mapper.toDTO(repo.findById(id).orElseThrow(()-> new NoSuchElementException("Serviço com id: " + id + " não encontrado.")));
+        return mapper.toDTO(repo.findById(id).orElseThrow(() -> new NoSuchElementException("Serviço com id: " + id + " não encontrado.")));
     }
 }

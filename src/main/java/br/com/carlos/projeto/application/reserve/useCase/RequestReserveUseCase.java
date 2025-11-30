@@ -27,7 +27,8 @@ public class RequestReserveUseCase {
     public ReserveDTO execute(RequestReserveCommand cmd) {
         User currentUser = auth.execute();
         br.com.carlos.projeto.domain.Service service = sRepo.findById(cmd.service_id())
-                .orElseThrow(() -> new IllegalArgumentException("Serviço não encontrado com o ID: " + cmd.service_id()));;
+                .orElseThrow(() -> new IllegalArgumentException("Serviço não encontrado com o ID: " + cmd.service_id()));
+        ;
 
         Reserve reserve = new Reserve(cmd.scheduledTo(), currentUser, service);
         currentUser.addReserve(reserve);
