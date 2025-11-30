@@ -29,7 +29,7 @@ public class RequestReserveUseCase {
         br.com.carlos.projeto.domain.Service service = sRepo.findById(cmd.service_id())
                 .orElseThrow(() -> new IllegalArgumentException("Serviço não encontrado com o ID: " + cmd.service_id()));;
 
-        Reserve reserve = new Reserve(cmd.dateTime(), currentUser, service);
+        Reserve reserve = new Reserve(cmd.scheduledTo(), currentUser, service);
         currentUser.addReserve(reserve);
         service.addReserve(reserve);
 
