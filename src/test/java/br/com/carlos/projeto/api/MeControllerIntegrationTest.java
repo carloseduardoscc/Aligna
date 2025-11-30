@@ -177,7 +177,7 @@ public class MeControllerIntegrationTest {
                 String body = """
                         {
                             "service_id" : "%s",
-                            "scheduledAt" : "%s"
+                            "scheduledTo" : "%s"
                         }""".formatted(createdServiceId, LocalDateTime.now().plusWeeks(1).with(DayOfWeek.WEDNESDAY).withHour(10).toString());
 
                 mock.perform(post("/me/reserves")
