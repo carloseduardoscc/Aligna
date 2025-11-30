@@ -3,6 +3,9 @@ package br.com.carlos.projeto.domain;
 import br.com.carlos.projeto.domain.exceptions.DomainException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvFileSource;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.DayOfWeek;
@@ -86,5 +89,37 @@ public class ReserveUnitaryTest {
         assertThrows(DomainException.class, () -> {
             new Reserve(java.time.LocalDateTime.now().plusWeeks(1).with(DayOfWeek.MONDAY).withHour(9).withMinute(0), professional, service1);
         });
+    }
+
+    @ParameterizedTest
+    @CsvFileSource(resources = "/reserve-status-transitions.csv", numLinesToSkip = 1)
+    void shouldValidateStatusTransitions(String initialState, String newState, boolean expectedValid){
+        Reserve reserve = new Reserve(java.time.LocalDateTime.now().plusWeeks(1).with(DayOfWeek.MONDAY).withHour(9).withMinute(0), applicant, service1);
+
+        applyStatusTransition(reserve, initialState);
+
+        if(expectedValid){
+            assertDoesNotThrow(()->{
+                applyStatusTransition(reserve, newState);
+            });
+        } else {
+            assertThrows(DomainException.class, ()->{
+                applyStatusTransition(reserve, newState);
+            });
+        }
+    }
+
+    void applyStatusTransition(Reserve reserve, String newState) {
+        switch(newState){
+            case "ACCEPTED":
+                reserve.accept();
+                break;
+            case "CANCELED":
+                reserve.cancel(CancellationSource.APPLICANT);
+                break;
+            case "REJECTED":
+                reserve.reject();
+                break;
+        }
     }
 }
